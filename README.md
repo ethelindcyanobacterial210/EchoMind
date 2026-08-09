@@ -7,8 +7,6 @@
 </p>
 
 <p align="center">
-  <a href="#-privacy-iron-law--zero-data-collection">🔒 Privacy</a> ·
-  <a href="#-third-party-privacy--security-certifications">🏅 Certifications</a> ·
   <a href="#-what-is-echomind">Features</a> ·
   <a href="#-quick-start">Quick Start</a> ·
   <a href="#-architecture">Architecture</a> ·
@@ -24,99 +22,6 @@
   <img src="https://img.shields.io/badge/Tests-987%20passed-brightgreen" alt="Tests">
   <img src="https://img.shields.io/badge/Platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey" alt="Cross-platform">
 </p>
-
----
-
-## 🔒 Privacy Iron Law — Zero Data Collection
-
-> **EchoMind does NOT collect, transmit, or store any user data on any external server.** This is not a feature — it is the **lifeblood** of this project. It can never be violated, under any circumstances.
->
-> ### What this means concretely:
-> - 🔴 **No telemetry, no analytics, no tracking** — zero network calls for data collection
-> - 🔴 **No user accounts, no login, no cloud sync** — nothing to phone home
-> - 🔴 **No CDN, no remote dependencies** — all frontend libraries are locally vendored
-> - 🟢 **All data stays on your machine** — documents, embeddings, chat history, settings, API keys — all local
-> - 🟢 **Database encrypted at rest** — SQLCipher AES-256, even your local disk is protected
-> - 🟢 **API keys never leave your device** — they are stored locally, masked in UI (`****` + last 4 chars)
->
-> ### How we enforce this:
-> - **No `reqwest`/`fetch` to any EchoMind-operated server** — the codebase has zero network endpoints for data exfiltration
-> - **`forbid(unsafe_code)`** in production crates — memory safety guaranteed by Rust
-> - **Source code is fully auditable** — clone, `grep`, and verify. The code is open for inspection at any time
-> - **Supply chain security** — `cargo audit` + `cargo deny check` on every CI run
->
-> **If you find any code that sends user data to an external server, it is a bug and a violation of this iron law. Please report it immediately.**
-
-### Third-Party Privacy & Security Certifications
-
-EchoMind's privacy and security claims are backed by recognized frameworks. All certifications below are **free to obtain** and **self-assessed** unless otherwise noted.
-
-#### 1. OpenSSF Best Practices Badge
-
-| | Status |
-|---|---|
-| **Issuing body** | Open Source Security Foundation (Linux Foundation) |
-| **Cost** | Free |
-| **Badge level** | Passing (target) → Silver → Gold |
-| **Verify** | [bestpractices.dev](https://bestpractices.dev) |
-
-**Already satisfied:**
-- ✅ Public repo with MIT license
-- ✅ Automated test suite (987 tests, CI-enforced)
-- ✅ `cargo audit` + `cargo deny check` supply chain security
-- ✅ Zero warnings policy (`clippy -D warnings`)
-- ✅ Documentation (`///` doc comments on all public types)
-
-#### 2. Privacy by Design (7 Foundational Principles)
-
-Coined by Dr. Ann Cavoukian (former Information & Privacy Commissioner of Ontario, Canada). Globally recognized privacy framework.
-
-| # | Principle | How EchoMind Satisfies It |
-|---|---|---|
-| 1 | **Proactive not Reactive** | Local-first architecture — privacy is the default, not an opt-in |
-| 2 | **Privacy as Default** | Zero data collection by default; no accounts, no telemetry |
-| 3 | **Privacy Embedded into Design** | Rust `forbid(unsafe_code)`, SQLCipher AES-256 at architecture level |
-| 4 | **Full Functionality — Positive-Sum** | Full RAG capability without sacrificing privacy (local embedding + BYOK) |
-| 5 | **End-to-End Security** | AES-256 encryption at rest → Argon2id KDF → PII redaction → audit hash-chain |
-| 6 | **Visibility & Transparency** | Source code open for audit; `grep -r 'reqwest\|fetch'` to verify zero exfiltration |
-| 7 | **Respect for User Privacy** | BYOK — user controls API keys, costs, and all data; no vendor lock-in |
-
-#### 3. NIST Privacy Framework Alignment
-
-U.S. National Institute of Standards and Technology privacy risk management framework.
-
-| Function | Category | EchoMind Implementation |
-|---|---|---|
-| **Identify-P** | Data inventory | All data is local: documents, embeddings, chat history, settings, API keys |
-| **Govern-P** | Governance | Privacy Iron Law enforced in codebase |
-| **Control-P** | Data processing | Local processing only; no external data transmission (BYOK calls go to user's LLM) |
-| **Communicate-P** | Transparency | Open source, auditable code, privacy policy in README |
-| **Protect-P** | Security controls | SQLCipher AES-256, Argon2id, PII detection, auto-lock, brute-force protection |
-
-#### 4. OWASP Privacy Top 10 Self-Assessment
-
-| OWASP Risk | Status | Evidence |
-|---|---|---|
-| P1: Data Exposure | ✅ Mitigated | All data local; no external storage |
-| P2: Unauthorized Access | ✅ Mitigated | SQLCipher AES-256 + Argon2id KDF + auto-lock |
-| P3: Data Minimization | ✅ Compliant | Zero data collection — nothing to minimize |
-| P4: Purpose Limitation | ✅ Compliant | No secondary use possible — data never leaves device |
-| P5: Dependency Risk | ✅ Managed | `cargo audit` + `cargo deny check` every CI run |
-| P6: Telemetry Risk | ✅ Eliminated | Zero telemetry, zero analytics, zero tracking |
-| P7: API Key Exposure | ✅ Mitigated | Masked in UI (`****` + last 4), stored locally only |
-| P8: Third-Party Sharing | ✅ Eliminated | No third-party data sharing; BYOK calls are user-to-LLM directly |
-| P9: User Consent | ✅ Satisfied | BYOK model — user explicitly configures and controls all API access |
-| P10: Breach Notification | ✅ N/A | No data stored externally → no breach surface |
-
-#### 5. Reproducible Builds & SBOM
-
-| Control | Status | Details |
-|---|---|---|
-| **Reproducible builds** | 🔄 Planned | Deterministic build pipeline (Cargo `--locked` + pinned versions) |
-| **SBOM (Software Bill of Materials)** | ✅ Available | `cargo deny check` generates dependency inventory; `Cargo.lock` pinned |
-| **Dependency audit** | ✅ CI-enforced | `cargo audit` + `cargo deny check` on every PR |
-| **No `unsafe` code** | ✅ Enforced | `forbid(unsafe_code)` in production crates |
-| **No CDN dependencies** | ✅ Verified | All frontend libraries locally vendored |
 
 ---
 
@@ -190,22 +95,17 @@ EchoMind is a desktop application that lets you **chat with your local documents
 - **RAM budget** — LRU eviction + system memory awareness
 - **Model download manager** — pause/resume/cancel + crash recovery
 
-### 🔒 Privacy & Security — Enforced by Iron Law
-
-> **See the [Privacy Iron Law](#-privacy-iron-law--zero-data-collection) at the top of this document.** EchoMind collects zero user data. All processing is local. The source code is open for audit at any time.
-
-- **Data stays local** — documents and conversations never leave your machine. No telemetry, no analytics, no tracking
-- **No network data exfiltration** — zero `reqwest`/`fetch` calls to any EchoMind-operated server. BYOK API calls go directly to your configured LLM provider
+### 🔒 Security Architecture
 - **SQLCipher encryption** — AES-256 transparent database encryption
 - **Argon2id key derivation** — memory-hard KDF (m=19456KB, t=2, p=1) + PBKDF2 fallback
 - **PII detection & redaction** — 8 types (email, phone, ID card, bank card, IP, SSN, passport, intl phone)
 - **Audit hash-chain** — SHA-256 linked audit logs with tamper detection
-- **Auto-lock** — idle timeout → locked state, `record_activity()` resets timer
+- **Auto-lock** — idle timeout → locked state
 - **Brute-force protection** — 5 failed attempts → exponential backoff
 - **Clipboard auto-clear** — sensitive data auto-cleared after timeout
 - **API key masking** — `****` + last 4 chars, never plaintext
 - **Security posture** — Dangerous / Auto / Strict tiers with shadow screening
-- **Source code auditable** — clone the repo and `grep -r 'reqwest\|fetch\|http'` to verify zero data exfiltration endpoints
+- **`forbid(unsafe_code)`** in production crates — memory safety guaranteed by Rust
 
 ### 🎨 Rich Rendering
 - **Markdown** with code syntax highlighting (highlight.js)
@@ -380,8 +280,6 @@ Any OpenAI-compatible API endpoint works:
 ## 📄 License
 
 **MIT License** — see [LICENSE](LICENSE).
-
-EchoMind is licensed under the MIT License — fully open source, free for any use (personal, commercial, modification, redistribution). No restrictions.
 
 ---
 
