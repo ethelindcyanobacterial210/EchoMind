@@ -9509,6 +9509,10 @@
         function initVoiceInput() {
           const micBtn = $("micBtn");
           if (!micBtn) return;
+          if (isTauriWebView() && !window.__voiceMockEnabled) {
+            micBtn.style.display = "none";
+            return;
+          }
           const SpeechRecognitionClass = window.SpeechRecognition || window.webkitSpeechRecognition;
           if (!SpeechRecognitionClass) {
             micBtn.style.display = "none";
