@@ -45,8 +45,8 @@ allow = [
     "BSL-1.0",
     "0BSD",
     "Unlicense",
-    # EchoMind 自身许可证（Business Source License 1.1，SPDX: BUSL-1.1）
-    "BUSL-1.1",
+    # EchoMind 自身许可证（Alpha 阶段：MIT；稳定后切换回 BUSL-1.1）
+    "MIT",
     # 以下为传递依赖需要的许可证
     "NCSA",
     "CDLA-Permissive-2.0",

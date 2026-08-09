@@ -2,7 +2,7 @@
 name = "echomind-models"
 version = "0.1.0-alpha.1"
 edition = "2024"
-license = "BUSL-1.1"
+license = "MIT"
 description = "EchoMind 数据契约层：纯数据结构与枚举，零业务逻辑、零外部服务依赖"
 
 [dependencies]

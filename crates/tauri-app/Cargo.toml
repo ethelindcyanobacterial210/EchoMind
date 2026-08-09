@@ -2,7 +2,7 @@
 name = "echomind-tauri-app"
 version = "0.1.0-alpha.1"
 edition = "2024"
-license = "BUSL-1.1"
+license = "MIT"
 description = "EchoMind Tauri 组装层：依赖注入、Command/Event 声明与错误码映射"
 
 [features]
