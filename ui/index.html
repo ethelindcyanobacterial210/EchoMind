@@ -5090,362 +5090,6 @@
           }
         });
       
-        // ui/src/i18n.js
-        function flatten(obj, prefix = "") {
-          const result = {};
-          for (const key of Object.keys(obj)) {
-            const fullKey = prefix ? `${prefix}.${key}` : key;
-            if (typeof obj[key] === "object" && obj[key] !== null && !Array.isArray(obj[key])) {
-              Object.assign(result, flatten(obj[key], fullKey));
-            } else {
-              result[fullKey] = String(obj[key]);
-            }
-          }
-          return result;
-        }
-        async function loadLocaleData(locale) {
-          if (_cache.has(locale)) return _cache.get(locale);
-          if (location.protocol === "file:" && !window.__TAURI__) {
-            _cache.set(locale, {});
-            return {};
-          }
-          try {
-            const resp = await fetch(`locales/${locale}.json`);
-            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-            const data = await resp.json();
-            const flattened = flatten(data);
-            _cache.set(locale, flattened);
-            return flattened;
-          } catch (err) {
-            console.warn(`[i18n] Failed to load locale "${locale}": ${err.message}`);
-            _cache.set(locale, {});
-            return {};
-          }
-        }
-        function interpolate(str, params) {
-          if (!params) return str;
-          return str.replace(/\{(\w+)\}/g, (match, key) => {
-            return params[key] !== void 0 ? String(params[key]) : match;
-          });
-        }
-        function t(key, params) {
-          const current = _cache.get(_locale);
-          const fallback = _cache.get(FALLBACK_LOCALE);
-          let value = current?.[key];
-          if (value === void 0) value = fallback?.[key];
-          if (value === void 0) return key;
-          return interpolate(value, params);
-        }
-        function getLocale() {
-          return _locale;
-        }
-        function detectLocale() {
-          const navLang = navigator.language || navigator.languages?.[0] || "";
-          if (navLang.toLowerCase().startsWith("zh")) return "zh-CN";
-          if (navLang.toLowerCase().startsWith("ja")) return "ja";
-          return DEFAULT_LOCALE;
-        }
-        async function setLocale(locale, persist = true) {
-          if (!SUPPORTED_LOCALES.includes(locale)) {
-            console.warn(`[i18n] Unsupported locale "${locale}", falling back to ${DEFAULT_LOCALE}`);
-            locale = DEFAULT_LOCALE;
-          }
-          _locale = locale;
-          await loadLocaleData(locale);
-          if (locale !== FALLBACK_LOCALE) await loadLocaleData(FALLBACK_LOCALE);
-          try {
-            localStorage.setItem(STORAGE_KEY, locale);
-          } catch (_) {
-          }
-          if (persist) {
-            try {
-              await window.__TAURI__?.core?.invoke("set_locale", { locale });
-            } catch (_) {
-            }
-          }
-          refreshI18nElements();
-          document.documentElement.lang = locale;
-        }
-        function refreshI18nElements() {
-          document.querySelectorAll("[data-i18n]").forEach((el) => {
-            const key = el.getAttribute("data-i18n");
-            el.textContent = t(key);
-          });
-          document.querySelectorAll("[data-i18n-html]").forEach((el) => {
-            const key = el.getAttribute("data-i18n-html");
-            el.innerHTML = t(key);
-          });
-          document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
-            const key = el.getAttribute("data-i18n-placeholder");
-            el.placeholder = t(key);
-          });
-          document.querySelectorAll("[data-i18n-title]").forEach((el) => {
-            const key = el.getAttribute("data-i18n-title");
-            el.title = t(key);
-          });
-          document.querySelectorAll("[data-i18n-aria-label]").forEach((el) => {
-            const key = el.getAttribute("data-i18n-aria-label");
-            el.setAttribute("aria-label", t(key));
-          });
-        }
-        async function initI18n() {
-          let savedLocale = null;
-          try {
-            savedLocale = await window.__TAURI__?.core?.invoke("get_locale");
-          } catch (_) {
-          }
-          if (!savedLocale) {
-            try {
-              savedLocale = localStorage.getItem(STORAGE_KEY);
-            } catch (_) {
-            }
-          }
-          if (!savedLocale || !SUPPORTED_LOCALES.includes(
-            /** @type {string} */
-            savedLocale
-          )) {
-            savedLocale = detectLocale();
-          }
-          _locale = /** @type {string} */
-          savedLocale;
-          await loadLocaleData(_locale);
-          if (_locale !== FALLBACK_LOCALE) await loadLocaleData(FALLBACK_LOCALE);
-          refreshI18nElements();
-          document.documentElement.lang = _locale;
-        }
-        var SUPPORTED_LOCALES, DEFAULT_LOCALE, FALLBACK_LOCALE, STORAGE_KEY, _locale, _cache;
-        var init_i18n = __esm({
-          "ui/src/i18n.js"() {
-            SUPPORTED_LOCALES = ["en", "zh-CN", "ja"];
-            DEFAULT_LOCALE = "en";
-            FALLBACK_LOCALE = "en";
-            STORAGE_KEY = "echomind_locale";
-            _locale = DEFAULT_LOCALE;
-            _cache = /* @__PURE__ */ new Map();
-          }
-        });
-      
-        // ui/src/focus-trap.js
-        function isVisible(el) {
-          if (!el) return false;
-          if (el.offsetWidth === 0 && el.offsetHeight === 0) return false;
-          const style = window.getComputedStyle(el);
-          if (style.display === "none") return false;
-          if (style.visibility === "hidden") return false;
-          return true;
-        }
-        function getFocusableElements(container) {
-          if (!container) return [];
-          return Array.from(
-            container.querySelectorAll(FOCUSABLE_SELECTORS)
-          ).filter(isVisible);
-        }
-        function createFocusTrap(element) {
-          let previouslyFocused = null;
-          let active = false;
-          let keydownHandler = null;
-          function handleKeyDown(e) {
-            if (!active) return;
-            if (e.key !== "Tab") return;
-            const focusable = getFocusableElements(element);
-            if (focusable.length === 0) {
-              e.preventDefault();
-              return;
-            }
-            const first = focusable[0];
-            const last = focusable[focusable.length - 1];
-            const current = document.activeElement;
-            if (e.shiftKey) {
-              if (current === first || current === element || !element.contains(current)) {
-                e.preventDefault();
-                last.focus();
-              }
-            } else {
-              if (current === last || current === element || !element.contains(current)) {
-                e.preventDefault();
-                first.focus();
-              }
-            }
-          }
-          function activate() {
-            if (active) return;
-            active = true;
-            previouslyFocused = document.activeElement;
-            keydownHandler = handleKeyDown;
-            document.addEventListener("keydown", keydownHandler, true);
-            const focusable = getFocusableElements(element);
-            if (focusable.length > 0) {
-              focusable[0].focus();
-            } else {
-              if (!element.hasAttribute("tabindex")) {
-                element.setAttribute("tabindex", "-1");
-              }
-              element.focus();
-            }
-          }
-          function deactivate() {
-            if (!active) return;
-            active = false;
-            if (keydownHandler) {
-              document.removeEventListener("keydown", keydownHandler, true);
-              keydownHandler = null;
-            }
-            if (previouslyFocused && typeof previouslyFocused.focus === "function") {
-              previouslyFocused.focus();
-            }
-            previouslyFocused = null;
-          }
-          return { activate, deactivate };
-        }
-        var FOCUSABLE_SELECTORS;
-        var init_focus_trap = __esm({
-          "ui/src/focus-trap.js"() {
-            FOCUSABLE_SELECTORS = [
-              "a[href]",
-              "button:not([disabled])",
-              "input:not([disabled])",
-              "textarea:not([disabled])",
-              "select:not([disabled])",
-              '[tabindex]:not([tabindex="-1"])'
-            ].join(", ");
-          }
-        });
-      
-        // ui/src/confirm-dialog.js
-        var confirm_dialog_exports = {};
-        __export(confirm_dialog_exports, {
-          showConfirmDialog: () => showConfirmDialog
-        });
-        function _closeDialog(result) {
-          if (_enableTimer !== null) {
-            clearTimeout(_enableTimer);
-            _enableTimer = null;
-          }
-          if (_activeTrap) {
-            _activeTrap.deactivate();
-            _activeTrap = null;
-          }
-          if (_activeDialog) {
-            document.removeEventListener("keydown", _onKeyDown);
-            _activeDialog.remove();
-            _activeDialog = null;
-          }
-          if (_activeResolve) {
-            const resolve = _activeResolve;
-            _activeResolve = null;
-            resolve(result);
-          }
-        }
-        function _onKeyDown(e) {
-          if (!_activeDialog) return;
-          if (e.key === "Escape") {
-            e.preventDefault();
-            e.stopPropagation();
-            _closeDialog(false);
-          } else if (e.key === "Enter") {
-            e.preventDefault();
-            e.stopPropagation();
-            const confirmBtn = _activeDialog.querySelector('[data-role="confirm"]');
-            if (confirmBtn && !confirmBtn.disabled) {
-              _closeDialog(true);
-            }
-          }
-        }
-        function showConfirmDialog(opts = {}) {
-          const { title = "", body = "", confirmText, cancelText, danger = true } = opts;
-          if (_activeDialog) {
-            _closeDialog(false);
-          }
-          return new Promise((resolve) => {
-            _activeResolve = resolve;
-            const overlay = document.createElement("div");
-            overlay.id = "confirmDialog";
-            overlay.className = "fixed inset-0 z-[55] bg-surface-0/95 backdrop-blur-sm flex items-center justify-center";
-            overlay.setAttribute("role", "alertdialog");
-            overlay.setAttribute("aria-modal", "true");
-            overlay.setAttribute("aria-labelledby", "confirmDialogTitle");
-            overlay.setAttribute("aria-describedby", "confirmDialogBody");
-            overlay.addEventListener("click", (e) => {
-              if (e.target === overlay) {
-                _closeDialog(false);
-              }
-            });
-            const confirmLabel = confirmText || t("common.confirm") || "\u786E\u8BA4";
-            const cancelLabel = cancelText || t("common.cancel") || "\u53D6\u6D88";
-            const confirmBtnClass = danger ? "flex-1 bg-red-500/15 text-red-300 border border-red-400/40 rounded-xl px-4 py-3 text-sm hover:bg-red-500/25 transition-colors disabled:opacity-40" : "flex-1 bg-accent/15 text-accent border border-accent/30 rounded-xl px-4 py-3 text-sm hover:bg-accent/25 transition-colors disabled:opacity-40";
-            const container = document.createElement("div");
-            container.className = "w-full max-w-sm mx-4 bg-surface-1 border border-border-strong rounded-lg p-6";
-            if (danger) {
-              const icon = document.createElement("div");
-              icon.className = "text-3xl mb-2 text-amber-400";
-              icon.textContent = "\u26A0\uFE0F";
-              container.appendChild(icon);
-            }
-            const titleEl = document.createElement("p");
-            titleEl.id = "confirmDialogTitle";
-            titleEl.className = "text-lg font-semibold text-text-primary mb-2";
-            titleEl.textContent = title;
-            container.appendChild(titleEl);
-            if (body) {
-              const bodyEl = document.createElement("p");
-              bodyEl.id = "confirmDialogBody";
-              bodyEl.className = "text-sm text-text-secondary leading-relaxed mb-4";
-              bodyEl.innerHTML = body;
-              container.appendChild(bodyEl);
-            } else {
-              const spacer = document.createElement("div");
-              spacer.className = "mb-4";
-              container.appendChild(spacer);
-            }
-            const btnRow = document.createElement("div");
-            btnRow.className = "flex gap-3";
-            const cancelBtn = document.createElement("button");
-            cancelBtn.className = "flex-1 border border-border-default rounded-xl px-4 py-3 text-sm text-text-secondary hover:bg-white/5 transition-colors";
-            cancelBtn.textContent = cancelLabel;
-            cancelBtn.setAttribute("data-role", "cancel");
-            cancelBtn.addEventListener("click", () => _closeDialog(false));
-            const confirmBtn = document.createElement("button");
-            confirmBtn.className = confirmBtnClass;
-            confirmBtn.textContent = confirmLabel;
-            confirmBtn.setAttribute("data-role", "confirm");
-            confirmBtn.disabled = true;
-            confirmBtn.addEventListener("click", () => {
-              if (!confirmBtn.disabled) {
-                _closeDialog(true);
-              }
-            });
-            btnRow.appendChild(cancelBtn);
-            btnRow.appendChild(confirmBtn);
-            container.appendChild(btnRow);
-            overlay.appendChild(container);
-            document.body.appendChild(overlay);
-            _activeDialog = overlay;
-            document.addEventListener("keydown", _onKeyDown, true);
-            _activeTrap = createFocusTrap(overlay);
-            _activeTrap.activate();
-            _enableTimer = setTimeout(() => {
-              if (confirmBtn) {
-                confirmBtn.disabled = false;
-                confirmBtn.focus();
-              }
-              _enableTimer = null;
-            }, ANTI_MISTOUCH_DELAY);
-          });
-        }
-        var _activeDialog, _activeResolve, _enableTimer, _activeTrap, ANTI_MISTOUCH_DELAY;
-        var init_confirm_dialog = __esm({
-          "ui/src/confirm-dialog.js"() {
-            init_i18n();
-            init_focus_trap();
-            _activeDialog = null;
-            _activeResolve = null;
-            _enableTimer = null;
-            _activeTrap = null;
-            ANTI_MISTOUCH_DELAY = 500;
-            window.showConfirmDialog = showConfirmDialog;
-          }
-        });
-      
         // ui/src/state.js
         var initialState = {
           history: [],
@@ -5614,8 +5258,137 @@
         // ui/src/main.js
         init_ipc();
       
+        // ui/src/i18n.js
+        var SUPPORTED_LOCALES = ["en", "zh-CN", "ja"];
+        var DEFAULT_LOCALE = "en";
+        var FALLBACK_LOCALE = "en";
+        var STORAGE_KEY = "echomind_locale";
+        var _locale = DEFAULT_LOCALE;
+        var _cache = /* @__PURE__ */ new Map();
+        function flatten(obj, prefix = "") {
+          const result = {};
+          for (const key of Object.keys(obj)) {
+            const fullKey = prefix ? `${prefix}.${key}` : key;
+            if (typeof obj[key] === "object" && obj[key] !== null && !Array.isArray(obj[key])) {
+              Object.assign(result, flatten(obj[key], fullKey));
+            } else {
+              result[fullKey] = String(obj[key]);
+            }
+          }
+          return result;
+        }
+        async function loadLocaleData(locale) {
+          if (_cache.has(locale)) return _cache.get(locale);
+          if (location.protocol === "file:" && !window.__TAURI__) {
+            _cache.set(locale, {});
+            return {};
+          }
+          try {
+            const resp = await fetch(`locales/${locale}.json`);
+            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+            const data = await resp.json();
+            const flattened = flatten(data);
+            _cache.set(locale, flattened);
+            return flattened;
+          } catch (err) {
+            console.warn(`[i18n] Failed to load locale "${locale}": ${err.message}`);
+            _cache.set(locale, {});
+            return {};
+          }
+        }
+        function interpolate(str, params) {
+          if (!params) return str;
+          return str.replace(/\{(\w+)\}/g, (match, key) => {
+            return params[key] !== void 0 ? String(params[key]) : match;
+          });
+        }
+        function t(key, params) {
+          const current = _cache.get(_locale);
+          const fallback = _cache.get(FALLBACK_LOCALE);
+          let value = current?.[key];
+          if (value === void 0) value = fallback?.[key];
+          if (value === void 0) return key;
+          return interpolate(value, params);
+        }
+        function getLocale() {
+          return _locale;
+        }
+        function detectLocale() {
+          const navLang = navigator.language || navigator.languages?.[0] || "";
+          if (navLang.toLowerCase().startsWith("zh")) return "zh-CN";
+          if (navLang.toLowerCase().startsWith("ja")) return "ja";
+          return DEFAULT_LOCALE;
+        }
+        async function setLocale(locale, persist = true) {
+          if (!SUPPORTED_LOCALES.includes(locale)) {
+            console.warn(`[i18n] Unsupported locale "${locale}", falling back to ${DEFAULT_LOCALE}`);
+            locale = DEFAULT_LOCALE;
+          }
+          _locale = locale;
+          await loadLocaleData(locale);
+          if (locale !== FALLBACK_LOCALE) await loadLocaleData(FALLBACK_LOCALE);
+          try {
+            localStorage.setItem(STORAGE_KEY, locale);
+          } catch (_) {
+          }
+          if (persist) {
+            try {
+              await window.__TAURI__?.core?.invoke("set_locale", { locale });
+            } catch (_) {
+            }
+          }
+          refreshI18nElements();
+          document.documentElement.lang = locale;
+        }
+        function refreshI18nElements() {
+          document.querySelectorAll("[data-i18n]").forEach((el) => {
+            const key = el.getAttribute("data-i18n");
+            el.textContent = t(key);
+          });
+          document.querySelectorAll("[data-i18n-html]").forEach((el) => {
+            const key = el.getAttribute("data-i18n-html");
+            el.innerHTML = t(key);
+          });
+          document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
+            const key = el.getAttribute("data-i18n-placeholder");
+            el.placeholder = t(key);
+          });
+          document.querySelectorAll("[data-i18n-title]").forEach((el) => {
+            const key = el.getAttribute("data-i18n-title");
+            el.title = t(key);
+          });
+          document.querySelectorAll("[data-i18n-aria-label]").forEach((el) => {
+            const key = el.getAttribute("data-i18n-aria-label");
+            el.setAttribute("aria-label", t(key));
+          });
+        }
+        async function initI18n() {
+          let savedLocale = null;
+          try {
+            savedLocale = await window.__TAURI__?.core?.invoke("get_locale");
+          } catch (_) {
+          }
+          if (!savedLocale) {
+            try {
+              savedLocale = localStorage.getItem(STORAGE_KEY);
+            } catch (_) {
+            }
+          }
+          if (!savedLocale || !SUPPORTED_LOCALES.includes(
+            /** @type {string} */
+            savedLocale
+          )) {
+            savedLocale = detectLocale();
+          }
+          _locale = /** @type {string} */
+          savedLocale;
+          await loadLocaleData(_locale);
+          if (_locale !== FALLBACK_LOCALE) await loadLocaleData(FALLBACK_LOCALE);
+          refreshI18nElements();
+          document.documentElement.lang = _locale;
+        }
+      
         // ui/src/toast.js
-        init_i18n();
         var ERROR_PREFIX_MESSAGES = {
           NETWORK: { kind: "error", msgKey: "errors.network" },
           AUTH: { kind: "error", msgKey: "errors.auth" },
@@ -5669,8 +5442,89 @@
       
         // ui/src/paywall.js
         init_ipc();
-        init_i18n();
-        init_focus_trap();
+      
+        // ui/src/focus-trap.js
+        var FOCUSABLE_SELECTORS = [
+          "a[href]",
+          "button:not([disabled])",
+          "input:not([disabled])",
+          "textarea:not([disabled])",
+          "select:not([disabled])",
+          '[tabindex]:not([tabindex="-1"])'
+        ].join(", ");
+        function isVisible(el) {
+          if (!el) return false;
+          if (el.offsetWidth === 0 && el.offsetHeight === 0) return false;
+          const style = window.getComputedStyle(el);
+          if (style.display === "none") return false;
+          if (style.visibility === "hidden") return false;
+          return true;
+        }
+        function getFocusableElements(container) {
+          if (!container) return [];
+          return Array.from(
+            container.querySelectorAll(FOCUSABLE_SELECTORS)
+          ).filter(isVisible);
+        }
+        function createFocusTrap(element) {
+          let previouslyFocused = null;
+          let active = false;
+          let keydownHandler = null;
+          function handleKeyDown(e) {
+            if (!active) return;
+            if (e.key !== "Tab") return;
+            const focusable = getFocusableElements(element);
+            if (focusable.length === 0) {
+              e.preventDefault();
+              return;
+            }
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+            const current = document.activeElement;
+            if (e.shiftKey) {
+              if (current === first || current === element || !element.contains(current)) {
+                e.preventDefault();
+                last.focus();
+              }
+            } else {
+              if (current === last || current === element || !element.contains(current)) {
+                e.preventDefault();
+                first.focus();
+              }
+            }
+          }
+          function activate() {
+            if (active) return;
+            active = true;
+            previouslyFocused = document.activeElement;
+            keydownHandler = handleKeyDown;
+            document.addEventListener("keydown", keydownHandler, true);
+            const focusable = getFocusableElements(element);
+            if (focusable.length > 0) {
+              focusable[0].focus();
+            } else {
+              if (!element.hasAttribute("tabindex")) {
+                element.setAttribute("tabindex", "-1");
+              }
+              element.focus();
+            }
+          }
+          function deactivate() {
+            if (!active) return;
+            active = false;
+            if (keydownHandler) {
+              document.removeEventListener("keydown", keydownHandler, true);
+              keydownHandler = null;
+            }
+            if (previouslyFocused && typeof previouslyFocused.focus === "function") {
+              previouslyFocused.focus();
+            }
+            previouslyFocused = null;
+          }
+          return { activate, deactivate };
+        }
+      
+        // ui/src/paywall.js
         var _paywallTrap = null;
         function showPaywall(reason) {
           $("paywallReason").textContent = reason || t("paywall.reason_default");
@@ -5752,7 +5606,6 @@
         }
       
         // ui/src/import.js
-        init_i18n();
         function showImportProgress(total) {
           setState({ importing: true });
           $("importProgress").classList.remove("hidden");
@@ -5892,12 +5745,8 @@
           };
         }
       
-        // ui/src/markdown.js
-        init_i18n();
-      
         // ui/src/wiki-links.js
         init_ipc();
-        init_i18n();
         function enhanceWikiLinks(mdEl) {
           if (!mdEl) return;
           const walker = document.createTreeWalker(mdEl, NodeFilter.SHOW_TEXT, {
@@ -6396,9 +6245,6 @@
           enhanceTablesForChart(mdEl);
         }
       
-        // ui/src/chat-render.js
-        init_i18n();
-      
         // ui/src/caret.js
         var CARET_CLASS = "inline-block w-[2px] h-[1.1em] bg-accent ml-[2px] animate-caret-blink align-text-bottom rounded-[1px] motion-reduce:animate-none motion-reduce:opacity-50";
         function showCaret(container) {
@@ -6472,10 +6318,8 @@
       
         // ui/src/chat.js
         init_ipc();
-        init_i18n();
       
         // ui/src/guards.js
-        init_i18n();
         function requireDocuments() {
           if (get("docCount") === 0) {
             return { passed: false, reason: "chat.empty_kb_error" };
@@ -6535,7 +6379,6 @@
         }
       
         // ui/src/error-detail.js
-        init_i18n();
         var ERROR_RULES = [
           {
             type: "kb_empty",
@@ -6692,7 +6535,6 @@
         }
       
         // ui/src/context-bar.js
-        init_i18n();
         var DEFAULT_CONTEXT_LIMIT = 8e3;
         function getContextPercentage(used, limit) {
           if (!limit || limit <= 0) return 0;
@@ -6748,7 +6590,6 @@
         }
       
         // ui/src/slash-commands.js
-        init_i18n();
         init_ipc();
         var SLASH_COMMANDS = [
           {
@@ -6951,7 +6792,6 @@
         }
       
         // ui/src/doc-mention.js
-        init_i18n();
         function extractDocMentions(text) {
           if (!text) return [];
           const regex = /@(\S+)/g;
@@ -7030,7 +6870,6 @@
         }
       
         // ui/src/regen-carousel.js
-        init_i18n();
         function createCarousel(blockEl) {
           const existing = blockEl.querySelector(".regen-carousel");
           if (existing) return existing;
@@ -7139,14 +6978,10 @@
           return blockEl.querySelector(".regen-carousel") || null;
         }
       
-        // ui/src/feedback.js
-        init_i18n();
-      
         // ui/src/retrieval-feedback.js
         init_ipc();
       
         // ui/src/input-toggles.js
-        init_i18n();
         init_ipc();
         var ICON_HYBRID = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>`;
         var ICON_AGENT = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0 8 0V6a4 4 0 0 0-4-4z"/><path d="M5 12h14M12 8v8"/></svg>`;
@@ -7430,7 +7265,6 @@
         }
       
         // ui/src/queue-send.js
-        init_i18n();
         var _queue = [];
         function enqueueQuery(query) {
           if (!query || !query.trim()) return _queue.length;
@@ -7473,7 +7307,6 @@
         }
       
         // ui/src/followup.js
-        init_i18n();
         var MAX_SUGGESTIONS = 3;
         var FOLLOWUP_TEMPLATES = {
           // 实体深入型：对回答中提到的关键概念追问
@@ -7773,7 +7606,6 @@
       
         // ui/src/turn-tree.js
         init_ipc();
-        init_i18n();
         var _turnTree = [];
         function buildTurnTree(messages) {
           if (!messages || messages.length === 0) return [];
@@ -8083,7 +7915,6 @@
         }
       
         // ui/src/message-edit.js
-        init_i18n();
         init_ipc();
         var _editingBlock = null;
         var _onResendCallback = null;
@@ -9044,7 +8875,6 @@
         }
       
         // ui/src/empty-state.js
-        init_i18n();
         var DEFAULT_RECOMMENDATIONS = [
           "summarize_key_points",
           "compare_differences",
@@ -9192,7 +9022,6 @@
         }
       
         // ui/src/privacy-indicator.js
-        init_i18n();
         var PRIVACY_STATUS_TEXT = {
           encrypted: "AES-256 \u52A0\u5BC6",
           notEncrypted: "\u672A\u52A0\u5BC6",
@@ -9269,7 +9098,6 @@
         }
       
         // ui/src/thinking-panel.js
-        init_i18n();
         var THINKING_EXPANDED_PREFIX = "echomind_thinking_expanded_";
         function loadExpandedState(msgId) {
           if (msgId) {
@@ -9479,175 +9307,158 @@
         }
       
         // ui/src/voice-input.js
-        init_i18n();
-        var _recognition = null;
         var _isRecording = false;
-        var _disabled = false;
-        var _startTimeout = null;
-        var START_TIMEOUT_MS = 5e3;
-        var CONSENT_KEY = "voice.consent_granted";
-        function isTauriWebView() {
-          return typeof window.__TAURI__ !== "undefined";
-        }
-        function hasConsent() {
-          try {
-            return localStorage.getItem(CONSENT_KEY) === "true";
-          } catch (_) {
-            return false;
-          }
-        }
-        function saveConsent(granted) {
-          try {
-            localStorage.setItem(CONSENT_KEY, granted ? "true" : "false");
-          } catch (_) {
-          }
-        }
-        function getRecognitionLang() {
-          const locale = getLocale();
-          return locale === "zh-CN" ? "zh-CN" : "en-US";
-        }
+        var _mediaRecorder = null;
+        var _audioChunks = [];
+        var _mediaStream = null;
+        var _autoStopTimer = null;
+        var AUTO1_STOP_MS = 6e4;
+        var _mimeType = "audio/webm";
         function initVoiceInput() {
           const micBtn = $("micBtn");
           if (!micBtn) return;
-          if (isTauriWebView() && !window.__voiceMockEnabled) {
+          if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
             micBtn.style.display = "none";
             return;
           }
-          const SpeechRecognitionClass = window.SpeechRecognition || window.webkitSpeechRecognition;
-          if (!SpeechRecognitionClass) {
+          if (typeof MediaRecorder === "undefined") {
             micBtn.style.display = "none";
             return;
           }
-          try {
-            _recognition = new SpeechRecognitionClass();
-          } catch (e) {
-            micBtn.style.display = "none";
-            return;
-          }
-          _recognition.lang = getRecognitionLang();
-          _recognition.continuous = false;
-          _recognition.interimResults = true;
-          _recognition.maxAlternatives = 1;
-          _recognition.onresult = (event) => {
-            const input = $("queryInput");
-            if (!input) return;
-            let transcript = "";
-            for (let i = event.resultIndex; i < event.results.length; i++) {
-              const result = event.results[i];
-              if (result && result[0]) {
-                transcript += result[0].transcript;
-              }
-            }
-            if (transcript) {
-              input.value = transcript;
-              input.dispatchEvent(new Event("input", { bubbles: true }));
-            }
-          };
-          _recognition.onerror = (event) => {
-            clearStartTimeout();
-            const error = event.error || "";
-            if (error === "not-allowed" || error === "service-not-allowed") {
-              toastError(t("voice.permission_denied"));
-              disableMicButton();
-            } else if (error === "no-speech") {
-            } else if (error === "audio-capture") {
-              toastError(t("voice.permission_denied"));
-              disableMicButton();
-            } else if (error === "network") {
-              toastError(t("voice.start_failed"));
-            } else if (error === "aborted") {
-            } else {
-              toast(t("voice.not_supported"), "warning");
-            }
-            _isRecording = false;
-            updateMicButtonState();
-          };
-          _recognition.onend = () => {
-            clearStartTimeout();
-            _isRecording = false;
-            updateMicButtonState();
-          };
-          _recognition.onstart = () => {
-            clearStartTimeout();
-            _isRecording = true;
-            _recognition.lang = getRecognitionLang();
-            updateMicButtonState();
-          };
+          const candidates = ["audio/webm", "audio/ogg", "audio/mp4"];
+          _mimeType = candidates.find((type) => MediaRecorder.isTypeSupported(type)) || "audio/webm";
           micBtn.addEventListener("click", toggleRecording);
         }
-        function clearStartTimeout() {
-          if (_startTimeout !== null) {
-            clearTimeout(_startTimeout);
-            _startTimeout = null;
+        async function toggleRecording() {
+          if (_isRecording) {
+            stopRecording();
+          } else {
+            await startRecording();
           }
         }
-        function disableMicButton() {
-          _disabled = true;
-          _isRecording = false;
-          clearStartTimeout();
-          const micBtn = $("micBtn");
-          if (!micBtn) return;
-          micBtn.classList.remove("recording");
-          micBtn.style.opacity = "0.3";
-          micBtn.style.cursor = "not-allowed";
-          micBtn.title = t("voice.not_supported");
-          micBtn.setAttribute("aria-label", t("voice.not_supported"));
-        }
-        async function toggleRecording() {
-          if (!_recognition || _disabled) return;
-          if (_isRecording) {
-            try {
-              _recognition.stop();
-            } catch (_) {
+        async function startRecording() {
+          try {
+            _mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          } catch (err) {
+            const name = err?.name || "";
+            if (name === "NotAllowedError" || name === "SecurityError") {
+              toastError(t("voice.permission_denied"));
+            } else if (name === "NotFoundError" || name === "DevicesNotFoundError") {
+              toastError(t("voice.no_microphone"));
+            } else {
+              toastError(t("voice.start_failed"));
             }
+            return;
+          }
+          try {
+            _mediaRecorder = new MediaRecorder(_mediaStream, { mimeType: _mimeType });
+          } catch (err) {
+            try {
+              _mediaRecorder = new MediaRecorder(_mediaStream);
+              _mimeType = _mediaRecorder.mimeType || "audio/webm";
+            } catch (err2) {
+              toastError(t("voice.start_failed"));
+              cleanupStream();
+              return;
+            }
+          }
+          _audioChunks = [];
+          _mediaRecorder.ondataavailable = (event) => {
+            if (event.data && event.data.size > 0) {
+              _audioChunks.push(event.data);
+            }
+          };
+          _mediaRecorder.onstop = async () => {
+            const blob = new Blob(_audioChunks, { type: _mimeType });
+            _audioChunks = [];
+            cleanupStream();
+            if (blob.size < 100) {
+              updateMicButtonState();
+              return;
+            }
+            const micBtn = $("micBtn");
+            if (micBtn) {
+              micBtn.classList.add("transcribing");
+              micBtn.title = t("voice.transcribing");
+            }
+            try {
+              const arrayBuffer = await blob.arrayBuffer();
+              const audioData = Array.from(new Uint8Array(arrayBuffer));
+              const { invoke: invoke2 } = await Promise.resolve().then(() => (init_ipc(), ipc_exports));
+              const text = await invoke2("transcribe_audio", {
+                audioData,
+                mimeType: _mimeType
+              });
+              const input = $("queryInput");
+              if (input && text) {
+                input.value = text;
+                input.dispatchEvent(new Event("input", { bubbles: true }));
+                input.focus();
+              }
+            } catch (err) {
+              const msg = String(err?.message || err || "");
+              if (msg.includes("VALIDATION")) {
+                toastError(t("voice.no_api_config"));
+              } else if (msg.includes("\u7A7A\u6587\u672C")) {
+                toast(t("voice.no_speech_detected"), "warning");
+              } else {
+                toastError(t("voice.transcribe_failed"));
+              }
+            } finally {
+              if (micBtn) {
+                micBtn.classList.remove("transcribing");
+              }
+              updateMicButtonState();
+            }
+          };
+          _mediaRecorder.onerror = (event) => {
+            cleanupStream();
             _isRecording = false;
             updateMicButtonState();
-            return;
-          }
-          if (isTauriWebView() && !hasConsent()) {
-            const ok = await showVoiceConsentDialog();
-            if (!ok) return;
-            saveConsent(true);
-          }
-          startRecognition();
+            toastError(t("voice.start_failed"));
+          };
+          _mediaRecorder.start();
+          _isRecording = true;
+          updateMicButtonState();
+          clearAutoStopTimer();
+          _autoStopTimer = setTimeout(() => {
+            stopRecording();
+          }, AUTO1_STOP_MS);
         }
-        async function showVoiceConsentDialog() {
-          const { showConfirmDialog: showConfirmDialog2 } = await Promise.resolve().then(() => (init_confirm_dialog(), confirm_dialog_exports));
-          return showConfirmDialog2({
-            title: t("voice.consent_title"),
-            body: t("voice.consent_body"),
-            confirmText: t("voice.consent_confirm"),
-            danger: false
-          });
-        }
-        function startRecognition() {
-          try {
-            _recognition.start();
-          } catch (e) {
-            return;
-          }
-          clearStartTimeout();
-          _startTimeout = setTimeout(() => {
-            _startTimeout = null;
-            _isRecording = false;
+        function stopRecording() {
+          clearAutoStopTimer();
+          if (_isRecording && _mediaRecorder && _mediaRecorder.state !== "inactive") {
             try {
-              _recognition.abort();
+              _mediaRecorder.stop();
             } catch (_) {
             }
-            toastError(t("voice.recognition_timeout"));
-            disableMicButton();
-          }, START_TIMEOUT_MS);
+          }
+          _isRecording = false;
+          updateMicButtonState();
+        }
+        function cleanupStream() {
+          if (_mediaStream) {
+            _mediaStream.getTracks().forEach((track) => track.stop());
+            _mediaStream = null;
+          }
+          _mediaRecorder = null;
+        }
+        function clearAutoStopTimer() {
+          if (_autoStopTimer !== null) {
+            clearTimeout(_autoStopTimer);
+            _autoStopTimer = null;
+          }
         }
         function updateMicButtonState() {
           const micBtn = $("micBtn");
           if (!micBtn) return;
-          if (_disabled) return;
           if (_isRecording) {
             micBtn.classList.add("recording");
+            micBtn.classList.remove("transcribing");
             micBtn.title = t("voice.stop_recording");
             micBtn.setAttribute("aria-label", t("voice.stop_recording"));
           } else {
-            micBtn.classList.remove("recording");
+            micBtn.classList.remove("recording", "transcribing");
             micBtn.title = t("voice.start_recording");
             micBtn.setAttribute("aria-label", t("voice.start_recording"));
           }
@@ -10258,8 +10069,132 @@
       
         // ui/src/sidebar.js
         init_ipc();
-        init_i18n();
-        init_confirm_dialog();
+      
+        // ui/src/confirm-dialog.js
+        var _activeDialog = null;
+        var _activeResolve = null;
+        var _enableTimer = null;
+        var _activeTrap = null;
+        var ANTI_MISTOUCH_DELAY = 500;
+        function _closeDialog(result) {
+          if (_enableTimer !== null) {
+            clearTimeout(_enableTimer);
+            _enableTimer = null;
+          }
+          if (_activeTrap) {
+            _activeTrap.deactivate();
+            _activeTrap = null;
+          }
+          if (_activeDialog) {
+            document.removeEventListener("keydown", _onKeyDown);
+            _activeDialog.remove();
+            _activeDialog = null;
+          }
+          if (_activeResolve) {
+            const resolve = _activeResolve;
+            _activeResolve = null;
+            resolve(result);
+          }
+        }
+        function _onKeyDown(e) {
+          if (!_activeDialog) return;
+          if (e.key === "Escape") {
+            e.preventDefault();
+            e.stopPropagation();
+            _closeDialog(false);
+          } else if (e.key === "Enter") {
+            e.preventDefault();
+            e.stopPropagation();
+            const confirmBtn = _activeDialog.querySelector('[data-role="confirm"]');
+            if (confirmBtn && !confirmBtn.disabled) {
+              _closeDialog(true);
+            }
+          }
+        }
+        function showConfirmDialog(opts = {}) {
+          const { title = "", body = "", confirmText, cancelText, danger = true } = opts;
+          if (_activeDialog) {
+            _closeDialog(false);
+          }
+          return new Promise((resolve) => {
+            _activeResolve = resolve;
+            const overlay = document.createElement("div");
+            overlay.id = "confirmDialog";
+            overlay.className = "fixed inset-0 z-[55] bg-surface-0/95 backdrop-blur-sm flex items-center justify-center";
+            overlay.setAttribute("role", "alertdialog");
+            overlay.setAttribute("aria-modal", "true");
+            overlay.setAttribute("aria-labelledby", "confirmDialogTitle");
+            overlay.setAttribute("aria-describedby", "confirmDialogBody");
+            overlay.addEventListener("click", (e) => {
+              if (e.target === overlay) {
+                _closeDialog(false);
+              }
+            });
+            const confirmLabel = confirmText || t("common.confirm") || "\u786E\u8BA4";
+            const cancelLabel = cancelText || t("common.cancel") || "\u53D6\u6D88";
+            const confirmBtnClass = danger ? "flex-1 bg-red-500/15 text-red-300 border border-red-400/40 rounded-xl px-4 py-3 text-sm hover:bg-red-500/25 transition-colors disabled:opacity-40" : "flex-1 bg-accent/15 text-accent border border-accent/30 rounded-xl px-4 py-3 text-sm hover:bg-accent/25 transition-colors disabled:opacity-40";
+            const container = document.createElement("div");
+            container.className = "w-full max-w-sm mx-4 bg-surface-1 border border-border-strong rounded-lg p-6";
+            if (danger) {
+              const icon = document.createElement("div");
+              icon.className = "text-3xl mb-2 text-amber-400";
+              icon.textContent = "\u26A0\uFE0F";
+              container.appendChild(icon);
+            }
+            const titleEl = document.createElement("p");
+            titleEl.id = "confirmDialogTitle";
+            titleEl.className = "text-lg font-semibold text-text-primary mb-2";
+            titleEl.textContent = title;
+            container.appendChild(titleEl);
+            if (body) {
+              const bodyEl = document.createElement("p");
+              bodyEl.id = "confirmDialogBody";
+              bodyEl.className = "text-sm text-text-secondary leading-relaxed mb-4";
+              bodyEl.innerHTML = body;
+              container.appendChild(bodyEl);
+            } else {
+              const spacer = document.createElement("div");
+              spacer.className = "mb-4";
+              container.appendChild(spacer);
+            }
+            const btnRow = document.createElement("div");
+            btnRow.className = "flex gap-3";
+            const cancelBtn = document.createElement("button");
+            cancelBtn.className = "flex-1 border border-border-default rounded-xl px-4 py-3 text-sm text-text-secondary hover:bg-white/5 transition-colors";
+            cancelBtn.textContent = cancelLabel;
+            cancelBtn.setAttribute("data-role", "cancel");
+            cancelBtn.addEventListener("click", () => _closeDialog(false));
+            const confirmBtn = document.createElement("button");
+            confirmBtn.className = confirmBtnClass;
+            confirmBtn.textContent = confirmLabel;
+            confirmBtn.setAttribute("data-role", "confirm");
+            confirmBtn.disabled = true;
+            confirmBtn.addEventListener("click", () => {
+              if (!confirmBtn.disabled) {
+                _closeDialog(true);
+              }
+            });
+            btnRow.appendChild(cancelBtn);
+            btnRow.appendChild(confirmBtn);
+            container.appendChild(btnRow);
+            overlay.appendChild(container);
+            document.body.appendChild(overlay);
+            _activeDialog = overlay;
+            document.addEventListener("keydown", _onKeyDown, true);
+            _activeTrap = createFocusTrap(overlay);
+            _activeTrap.activate();
+            _enableTimer = setTimeout(() => {
+              if (confirmBtn) {
+                confirmBtn.disabled = false;
+                confirmBtn.focus();
+              }
+              _enableTimer = null;
+            }, ANTI_MISTOUCH_DELAY);
+          });
+        }
+        window.showConfirmDialog = showConfirmDialog;
+      
+        // ui/src/sidebar.js
         var BOTTOM_ANCHOR_THRESHOLD = 100;
         var _toggleSeq = 0;
         var _anchorRafId = 0;
@@ -10881,7 +10816,6 @@
         }
       
         // ui/src/command-palette.js
-        init_i18n();
         function filterCommands(query, commands) {
           const q = query.trim().toLowerCase();
           if (!q) return [...commands];
@@ -11213,8 +11147,6 @@
       
         // ui/src/wizard.js
         init_ipc();
-        init_i18n();
-        init_focus_trap();
         var _wizardTrap = null;
         var _currentStep = 1;
         var _onComplete = null;
@@ -11652,12 +11584,9 @@
         // ui/src/settings.js
         init_ipc();
         init_ipc();
-        init_i18n();
       
         // ui/src/security.js
         init_ipc();
-        init_i18n();
-        init_focus_trap();
         var _lockOverlayEl = null;
         var _lockPasswordInputEl = null;
         var _lockErrorEl = null;
@@ -12184,13 +12113,8 @@
           return commands;
         }
       
-        // ui/src/settings.js
-        init_confirm_dialog();
-        init_focus_trap();
-      
         // ui/src/perf-settings.js
         init_ipc();
-        init_i18n();
         async function renderPerfSettings(container) {
           if (!container) return;
           let cacheStats = null;
@@ -12525,8 +12449,6 @@
       
         // ui/src/memory-panel.js
         init_ipc();
-        init_i18n();
-        init_confirm_dialog();
         var TIER_CONFIG = [
           { key: "wing", labelKey: "memory.tier_wing", color: "#38bdf8" },
           { key: "hall", labelKey: "memory.tier_hall", color: "#a78bfa" },
@@ -12677,14 +12599,9 @@
       
         // ui/src/settings-local-llm.js
         init_ipc();
-        init_i18n();
-        init_confirm_dialog();
       
         // ui/src/download-manager.js
         init_ipc();
-        init_i18n();
-        init_confirm_dialog();
-        init_focus_trap();
         var _downloads = /* @__PURE__ */ new Map();
         var _panelOpen = false;
         var _panelTrap = null;
@@ -13395,7 +13312,6 @@
       
         // ui/src/export.js
         init_ipc();
-        init_i18n();
         function getPdfPageSize() {
           try {
             return localStorage.getItem("export.pdf_page_size") || "A4";
@@ -14791,9 +14707,6 @@
           nameInput.focus();
         }
       
-        // ui/src/main.js
-        init_i18n();
-      
         // ui/src/conv-nav.js
         var _navItems = [];
         var _observer = null;
@@ -14916,7 +14829,6 @@
         }
       
         // ui/src/context-menu.js
-        init_i18n();
         var _visible = false;
         function initContextMenu() {
           const menu = $("ctxMenu");
@@ -15079,8 +14991,6 @@
       
         // ui/src/graph-viewer.js
         init_ipc();
-        init_i18n();
-        init_focus_trap();
         var RELATION_COLORS = {
           defined_as: "#38bdf8",
           // 天蓝
@@ -16172,16 +16082,12 @@
         }
       
         // ui/src/code-executor.js
-        init_i18n();
         init_ipc();
-        init_focus_trap();
         function initCodeExecutor() {
         }
       
         // ui/src/dream-panel.js
         init_ipc();
-        init_i18n();
-        init_focus_trap();
         var _dreamTrap = null;
         var _unlistenDreamProgress = null;
         var SEVERITY_COLORS = {
@@ -16352,8 +16258,6 @@
       
         // ui/src/symbol-search.js
         init_ipc();
-        init_i18n();
-        init_focus_trap();
         var SYMBOL_ICONS = {
           Function: "fn",
           Method: "m",
@@ -16490,8 +16394,6 @@
       
         // ui/src/workflow-panel.js
         init_ipc();
-        init_i18n();
-        init_focus_trap();
         var _workflowTrap = null;
         var _unlistenWorkflowProgress = null;
         async function openWorkflowPanel() {
