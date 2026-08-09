@@ -32,10 +32,7 @@
       "icons/icon.png"
     ],
     "macOS": {
-      "infoPlist": {
-        "NSMicrophoneUsageDescription": "EchoMind 需要访问麦克风以提供语音输入功能。您的语音数据不会被上传或存储。",
-        "NSSpeechRecognitionUsageDescription": "EchoMind 需要语音识别权限以将您的语音转换为文字。"
-      }
+      "infoPlist": "Info.plist"
     }
   }
 }
