@@ -12,7 +12,6 @@
   <a href="#-what-is-echomind">Features</a> ·
   <a href="#-quick-start">Quick Start</a> ·
   <a href="#-architecture">Architecture</a> ·
-  <a href="#-pricing">Pricing</a> ·
   <a href="#-tech-stack">Tech Stack</a> ·
   <a href="README.zh-CN.md">📖 中文文档</a>
 </p>
@@ -25,22 +24,6 @@
   <img src="https://img.shields.io/badge/Tests-987%20passed-brightgreen" alt="Tests">
   <img src="https://img.shields.io/badge/Platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey" alt="Cross-platform">
 </p>
-
----
-
-## 🚨 Alpha Notice — All Features Currently Free
-
-> **During the alpha phase, ALL Pro features are temporarily free.** The software is still stabilizing — there are bugs and incomplete features. Rather than gating functionality behind a paywall during this period, we're opening everything up for community testing and feedback.
->
-> **When the software matures, Pro gating will be re-enabled.** The `ALPHA_ALL_FEATURES_FREE` flag in `config_store.rs` controls this — flipping it to `false` restores all Pro restrictions with zero code changes elsewhere.
->
-> **What this means for you:**
-> - ✅ All document formats (PDF, DOCX, PPTX, EPUB, XLSX/CSV) — free
-> - ✅ Unlimited files (no 50-file limit) — free
-> - ✅ Local LLM, GPU acceleration, advanced retrieval — free (requires `--features pro` compile flag)
-> - ✅ No license key needed — just download and use
->
-> **After stabilization, the Free vs Pro split will apply as documented below.**
 
 ---
 
@@ -78,7 +61,7 @@ EchoMind's privacy and security claims are backed by recognized frameworks. All 
 | **Verify** | [bestpractices.dev](https://bestpractices.dev) |
 
 **Already satisfied:**
-- ✅ Public repo with MIT license (alpha phase)
+- ✅ Public repo with MIT license
 - ✅ Automated test suite (987 tests, CI-enforced)
 - ✅ `cargo audit` + `cargo deny check` supply chain security
 - ✅ Zero warnings policy (`clippy -D warnings`)
@@ -105,7 +88,7 @@ U.S. National Institute of Standards and Technology privacy risk management fram
 | Function | Category | EchoMind Implementation |
 |---|---|---|
 | **Identify-P** | Data inventory | All data is local: documents, embeddings, chat history, settings, API keys |
-| **Govern-P** | Governance | Privacy Iron Law enforced in codebase; `ALPHA_ALL_FEATURES_FREE` transparent |
+| **Govern-P** | Governance | Privacy Iron Law enforced in codebase |
 | **Control-P** | Data processing | Local processing only; no external data transmission (BYOK calls go to user's LLM) |
 | **Communicate-P** | Transparency | Open source, auditable code, privacy policy in README |
 | **Protect-P** | Security controls | SQLCipher AES-256, Argon2id, PII detection, auto-lock, brute-force protection |
@@ -158,9 +141,9 @@ EchoMind is a desktop application that lets you **chat with your local documents
 | **RAG knowledge base** | ✅ | ✅ | ✅ | ❌ |
 | **BYOK (own API key)** | ✅ | ✅ | ✅ | Local models |
 | **Local embedding (ONNX)** | ✅ | ✅ | ✅ | ❌ |
-| **Local LLM (GGUF)** | ✅ Pro | ❌ | ❌ | ✅ |
+| **Local LLM (GGUF)** | ✅ | ❌ | ❌ | ✅ |
 | **Database encryption** | ✅ SQLCipher | ❌ | ❌ | ❌ |
-| **Pricing model** | MIT (alpha) → BUSL-1.1 | Cloud subscription | Free | Free |
+| **License** | MIT | MIT | MIT | MIT |
 | **Zero server cost** | ✅ | ❌ | ❌ | ✅ |
 
 ---
@@ -168,21 +151,21 @@ EchoMind is a desktop application that lets you **chat with your local documents
 ## ✨ Features
 
 ### 📥 Document Intelligence
-- **Multi-format support** — Markdown, text, code files (Rust/TS/Python/Go), HTML (Free); PDF, DOCX, PPTX, EPUB, XLSX/CSV (Pro)
+- **Multi-format support** — Markdown, text, code files (Rust/TS/Python/Go), HTML, PDF, DOCX, PPTX, EPUB, XLSX/CSV
 - **100% local processing** — parsing, chunking, embedding, and vector storage all on-device
 - **Semantic chunking** — paragraph → sentence → clause recursive splitting with code block preservation
 - **Section-aware splitting** — Markdown heading hierarchy → section-boundary chunks
 - **ONNX embedding** — all-MiniLM-L6-v2 (384-dim, ~30 MB) via fastembed; no external API
-- **Custom embedding models** — Pro users can upload custom ONNX models
+- **Custom embedding models** — upload custom ONNX models
 - **SQLite vector store** — WAL mode, FTS5 full-text index, zero configuration
-- **HNSW index** — approximate nearest neighbor for sub-linear search (Pro)
+- **HNSW index** — approximate nearest neighbor for sub-linear search
 - **File deduplication** — MD5 content hashing prevents duplicate imports
 - **Crash recovery** — interrupted indexing tasks auto-recovered on restart
 
 ### 💬 RAG Chat
 - **Hybrid retrieval** — vector search + BM25 keyword matching → RRF fusion
-- **Cross-Encoder reranking** — bge-reranker-base for precision boost (Pro)
-- **HyDE query rewriting** — LLM generates hypothetical answer → embed → search (Pro)
+- **Cross-Encoder reranking** — bge-reranker-base for precision boost
+- **HyDE query rewriting** — LLM generates hypothetical answer → embed → search
 - **Knowledge graph** — entity extraction + relation mining → graph traversal retrieval
 - **Agentic RAG** — ReAct multi-step reasoning with parallel tool execution
 - **Progressive context injection** — start with top-2 chunks, expand if insufficient
@@ -195,7 +178,7 @@ EchoMind is a desktop application that lets you **chat with your local documents
 - **Multi-turn conversation** — full chat history with auto-extracted titles
 - **Branch tree** — ChatGPT-style visual conversation branching
 
-### 🧠 Local LLM Engine (Pro)
+### 🧠 Local LLM Engine
 - **GGUF inference** — mistral.rs v0.9.0, pure Rust
 - **GPU acceleration** — Metal (macOS) / CUDA (NVIDIA) / Accelerate (Apple BLAS)
 - **PagedAttention** — efficient KV cache management for long conversations
@@ -235,8 +218,8 @@ EchoMind is a desktop application that lets you **chat with your local documents
 ### 🛠 Advanced Tools
 - **AutoDream** — background idle tidying: duplicate detection, contradiction discovery
 - **Persistent memory** — three-tier (Wing/Hall/Room) with LLM consolidation
-- **Code symbol search** — tree-sitter AST extraction (Rust/TS/Python/Go) (Pro)
-- **Code execution sandbox** — Python/Node with timeout/memory/network limits (Pro)
+- **Code symbol search** — tree-sitter AST extraction (Rust/TS/Python/Go)
+- **Code execution sandbox** — Python/Node with timeout/memory/network limits
 - **DAG workflow** — visual workflow builder with template management
 - **Web search fusion** — DuckDuckGo Instant Answer + RRF local fusion
 - **Knowledge graph visualization** — D3.js force-directed graph with community detection
@@ -250,85 +233,11 @@ EchoMind is a desktop application that lets you **chat with your local documents
 - Linux x64
 - Built with Tauri v2 — native performance, not Electron
 
-### 💰 Free vs Pro — Feature Comparison
-
-> **One-time payment, no subscription.** During alpha: all features free. After stabilization: Free tier covers personal knowledge management (Markdown, text, code, HTML). Pro unlocks professional document formats, local LLM, and enterprise-grade retrieval.
-
-| Feature | 🆓 Free | 🚀 Pro |
-|---|:---:|:---:|
-| **File limit** | 50 files | **Unlimited** |
-| **Markdown & Text** | ✅ | ✅ |
-| **PDF import** | ❌ | ✅ |
-| **DOCX / PPTX / EPUB** | ❌ | ✅ |
-| **XLSX / CSV** | ❌ | ✅ |
-| **HTML / HTM** | ✅ | ✅ |
-| **Code files** (Rust/TS/Python/Go) | ✅ | ✅ |
-| **Remote LLM (BYOK)** | ✅ | ✅ |
-| **Local ONNX embedding** | ✅ | ✅ |
-| **Custom ONNX model upload** | ❌ | ✅ |
-| **Local LLM (GGUF inference)** | ❌ | ✅ |
-| **GPU acceleration** (Metal/CUDA) | ❌ | ✅ |
-| **PagedAttention** (long conversations) | ❌ | ✅ |
-| **KV cache persistence** | ❌ | ✅ |
-| **Custom GEMV kernel** (Q4/Q8 quant) | ❌ | ✅ |
-| **HNSW index** (sub-linear search) | ❌ | ✅ |
-| **Cross-Encoder reranking** | ❌ | ✅ |
-| **HyDE query rewriting** | ❌ | ✅ |
-| **ColBERT multi-vector** | ❌ | ✅ |
-| **PDF OCR** (PaddleOCR local) | ❌ | ✅ |
-| **VLM** (Vision Language Model) | ❌ | ✅ |
-| **Code symbol search** (tree-sitter) | ❌ | ✅ |
-| **Code execution sandbox** | ❌ | ✅ |
-| **Hybrid retrieval** (vector + BM25) | ✅ | ✅ |
-| **Knowledge graph** | ✅ | ✅ |
-| **Agentic RAG** (multi-step) | ✅ | ✅ |
-| **Semantic cache** (3-tier) | ✅ | ✅ |
-| **SQLCipher encryption** (AES-256) | ✅ | ✅ |
-| **PII detection** (8 types) | ✅ | ✅ |
-| **Audit hash-chain** | ✅ | ✅ |
-| **Auto-lock & brute-force protection** | ✅ | ✅ |
-| **Conversation branching** | ✅ | ✅ |
-| **Mermaid / KaTeX / Chart.js** | ✅ | ✅ |
-| **PDF export** | ✅ | ✅ |
-| **Folder sync** | ✅ | ✅ |
-| **Price** | **$0** | **One-time license** |
-
-<details>
-<summary>📋 Detailed Pro-only capabilities</summary>
-
-**Local LLM Engine — Zero cloud dependency:**
-- GGUF inference via mistral.rs v0.9.0 (pure Rust, no Python runtime)
-- GPU acceleration: Metal (macOS), CUDA (NVIDIA), Accelerate (Apple BLAS), Flash Attention 2
-- PagedAttention for efficient KV cache management in long conversations
-- Sampling parameters: temperature, top-p, top-k, repetition penalty
-- KV cache save/restore across sessions for instant context switching
-- Self-developed GEMV kernel for 4 quantization formats (Q4_0/Q4_K/Q8_0/Q8_K)
-- Weight repacking (Row-Major → Tile-Major) for CPU cache optimization
-- Layer-level streaming prefetch via `madvise(MADV_WILLNEED)`
-- RAM budget management with LRU eviction + system memory awareness
-- Model download manager with pause/resume/cancel + crash recovery
-
-**Advanced Retrieval — Enterprise precision:**
-- Cross-Encoder reranking (bge-reranker-base) for precision boost
-- HyDE query rewriting — LLM generates hypothetical answer → embed → search
-- HNSW approximate nearest neighbor index for sub-linear search complexity
-- ColBERT multi-vector embedding for fine-grained token-level matching
-- Custom ONNX embedding model upload
-
-**Multimodal Document Processing:**
-- PDF multimodal extraction: text layer + page rendering (pdfium) + OCR (PaddleOCR) + VLM
-- VLM structured understanding: tables → Markdown, flowcharts → Mermaid, charts → CSV
-
-**Developer Tools:**
-- Code symbol search via tree-sitter AST (Rust/TypeScript/Python/Go)
-- Code execution sandbox with timeout/memory/network limits (Python/Node)
-
-</details>
-
 ### 🗺 Roadmap
 
-#### v0.1.0-alpha.1 (Current)
+#### v0.1.0-alpha (Current)
 - Initial alpha release with core RAG functionality
+- All features fully open, no restrictions
 
 ---
 
@@ -350,10 +259,9 @@ crates/models → crates/prompt → crates/core → crates/infra → crates/taur
 | `crates/prompt` | Prompt building: SegmentedPrompt, RAG/Agent prompt construction, Cache policy |
 | `crates/compact` | Context compaction engine: LLM-based history summarization |
 | `crates/context` | System context registry: epoch management, durable baseline |
-| `crates/core` | Port traits + business logic; chat engine, import service, license verification, security |
+| `crates/core` | Port traits + business logic; chat engine, import service, security |
 | `crates/infra` | Adapters: SqliteStorage, LocalEmbedder, OpenAIProvider, HNSW, LocalLlmEngine, OCR, VLM |
 | `crates/tauri-app` | Tauri shell, 190+ IPC commands, AppState |
-| `crates/license-issuer` | CLI tool for Ed25519 license key generation (not in public release) |
 
 **Frontend**: Single-file SPA (`ui/index.html`) — 50 ES modules bundled via esbuild. Tailwind CSS (local JIT), vanilla JavaScript. **No CDN, no framework.**
 
@@ -395,7 +303,7 @@ cargo build
 # Run in dev mode (hot-reload)
 cargo tauri dev
 
-# Build with Pro features
+# Build with all features
 cargo build --features pro
 ```
 
@@ -426,7 +334,7 @@ node scripts/build-ui.mjs
 
 1. **Launch** EchoMind
 2. **Configure** — Settings → enter your LLM provider details (API key, base URL, model name)
-3. **Import** — Drag files into the window (PDF requires Pro)
+3. **Import** — Drag files into the window (all formats supported)
 4. **Wait** for indexing to complete (local ONNX embedding — watch the progress badge)
 5. **Chat** — Type your question and get streaming answers with source citations
 
@@ -441,36 +349,8 @@ Any OpenAI-compatible API endpoint works:
 | DeepSeek | `https://api.deepseek.com/v1` | Popular in China |
 | Ollama (local) | `http://localhost:11434/v1` | Empty API key |
 | LM Studio | `http://localhost:1234/v1` | Local model runner |
-| Local GGUF (Pro) | — | Built-in mistral.rs engine, no external service |
+| Local GGUF | — | Built-in mistral.rs engine, no external service |
 | Any OpenAI-compatible | Custom base URL | If it speaks OpenAI API, it works |
-
----
-
-## 💰 Pricing
-
-<div align="center">
-
-| | 🆓 Free | 🚀 Pro |
-|---|:---:|:---:|
-| **Price** | **$0** | **One-time license** |
-| **Recurring fees** | Never | Never |
-| **File limit** | 50 | Unlimited |
-| **Document formats** | md/txt/code/html | All formats |
-| **Local LLM** | ❌ | ✅ |
-| **Advanced retrieval** | ❌ | ✅ |
-| **Multimodal PDF** | ❌ | ✅ |
-| **Developer tools** | ❌ | ✅ |
-| **Core RAG + Security** | ✅ Full | ✅ Full |
-
-</div>
-
-**Free tier** is not a trial — it's a fully functional personal knowledge base supporting Markdown, text, code files (Rust/TS/Python/Go), and HTML. Includes RAG chat, hybrid retrieval, knowledge graph, agentic reasoning, semantic caching, SQLCipher encryption, PII detection, and audit logging. No time limits, no feature locks on core capabilities.
-
-**Pro tier** adds: unlimited files, professional document formats (PDF/DOCX/PPTX/EPUB/XLSX/CSV), local LLM inference (zero cloud), GPU acceleration, advanced retrieval (reranking/HyDE/HNSW/ColBERT), multimodal PDF processing (OCR/VLM), custom ONNX model upload, and developer tools (code symbol search + execution sandbox).
-
-> **⭐ Alpha phase: All Pro features are currently free.** No license key required. Pro gating will be re-enabled once the software stabilizes. See the [Alpha Notice](#-alpha-notice--all-features-currently-free) at the top.
-
-Pro license is verified **offline** via Ed25519 signature — no internet connection required for activation. No subscription, no recurring fees, no telemetry.
 
 ---
 
@@ -481,12 +361,11 @@ Pro license is verified **offline** via Ed25519 signature — no internet connec
 | Language | Rust (Edition 2024) | Native `async fn` in trait, no `async-trait` macro |
 | Desktop framework | Tauri v2 | Smaller, faster, more secure than Electron |
 | Embedding | fastembed (ONNX Runtime) | all-MiniLM-L6-v2, 384-dim, ~30 MB |
-| Local LLM | mistral.rs v0.9.0 | GGUF, Metal/CUDA, PagedAttention (Pro) |
+| Local LLM | mistral.rs v0.9.0 | GGUF, Metal/CUDA, PagedAttention |
 | Vector store | SQLite (rusqlite + r2d2) | WAL mode, FTS5, SQLCipher AES-256 |
 | LLM API | OpenAI-compatible | SSE streaming, 30s connection timeout |
 | Frontend | Vanilla JS ES modules | esbuild IIFE bundle, no React/Vue/Svelte |
 | Rendering | marked.js, DOMPurify, highlight.js | + Mermaid, KaTeX, Chart.js, D3.js |
-| License | Ed25519 signature | Offline verification, zero network |
 
 ### Code Quality
 
@@ -500,24 +379,9 @@ Pro license is verified **offline** via Ed25519 signature — no internet connec
 
 ## 📄 License
 
-**Current (Alpha): MIT License** — see [LICENSE](LICENSE).
+**MIT License** — see [LICENSE](LICENSE).
 
-During the alpha phase, EchoMind is licensed under the **MIT License** — fully open source, free for any use (personal, commercial, modification, redistribution). All Pro features are unlocked at no cost.
-
-**Future (Post-stabilization): Business Source License 1.1 (BUSL-1.1)**
-
-Once the software matures:
-- License will switch from MIT → BUSL-1.1
-- `ALPHA_ALL_FEATURES_FREE` will be set to `false`
-- Free/Pro tier gating will be re-enabled
-- BUSL-1.1 allows:
-  - ✅ **Personal non-commercial use** — learning, personal knowledge management, research
-  - ✅ **Source code review** — full transparency for privacy-conscious users
-  - ✅ **30-day evaluation** for organizations
-  - ❌ **Commercial use without a license** — requires purchasing a Pro license
-- On **January 1, 2030**, BUSL-1.1 automatically converts to **Apache License 2.0**
-
-> **Why MIT now?** The software is still stabilizing. We want maximum adoption and community feedback during this period. Restricting use before the product is stable would slow down improvement. When the software is solid, we'll switch to BUSL-1.1 to sustain development.
+EchoMind is licensed under the MIT License — fully open source, free for any use (personal, commercial, modification, redistribution). No restrictions.
 
 ---
 

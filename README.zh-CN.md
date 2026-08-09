@@ -12,7 +12,6 @@
   <a href="#-什么是-echomind">功能</a> ·
   <a href="#-快速开始">快速开始</a> ·
   <a href="#-架构设计">架构</a> ·
-  <a href="#-定价">定价</a> ·
   <a href="#-技术栈">技术栈</a> ·
   <a href="README.md">📖 English</a>
 </p>
@@ -25,22 +24,6 @@
   <img src="https://img.shields.io/badge/测试-987%20passed-brightgreen" alt="测试">
   <img src="https://img.shields.io/badge/平台-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey" alt="跨平台">
 </p>
-
----
-
-## 🚨 Alpha 公告 — 全功能暂时免费
-
-> **Alpha 阶段，所有 Pro 功能暂时免费开放。** 软件仍在打磨中——存在 bug 和不完善的功能。与其在稳定前就设付费墙，不如全部开放给社区测试和反馈。
->
-> **软件成熟后，Pro 门控将重新启用。** `config_store.rs` 中的 `ALPHA_ALL_FEATURES_FREE` 标志控制此行为——改为 `false` 即可恢复所有限制，无需修改其他代码。
->
-> **这意味着：**
-> - ✅ 全部文档格式（PDF、DOCX、PPTX、EPUB、XLSX/CSV）— 免费
-> - ✅ 无限文件（无 50 文件限制）— 免费
-> - ✅ 本地大模型、GPU 加速、高级检索 — 免费（需 `--features pro` 编译）
-> - ✅ 无需 License Key — 下载即用
->
-> **稳定后，以下方文档所述的免费/Pro 划分为准。**
 
 ---
 
@@ -78,7 +61,7 @@ EchoMind 的隐私和安全声明由公认框架背书。以下认证均为**免
 | **验证** | [bestpractices.dev](https://bestpractices.dev) |
 
 **已满足条件：**
-- ✅ 公开仓库 + MIT 许可证（alpha 阶段）
+- ✅ 公开仓库 + MIT 许可证
 - ✅ 自动化测试套件（987 个测试，CI 强制）
 - ✅ `cargo audit` + `cargo deny check` 供应链安全
 - ✅ 零警告策略（`clippy -D warnings`）
@@ -105,7 +88,7 @@ EchoMind 的隐私和安全声明由公认框架背书。以下认证均为**免
 | 功能 | 类别 | EchoMind 实现 |
 |---|---|---|
 | **Identify-P** | 数据资产盘点 | 全部数据本地：文档、向量、聊天记录、设置、API Key |
-| **Govern-P** | 治理 | 隐私铁律在代码库中执行；`ALPHA_ALL_FEATURES_FREE` 透明 |
+| **Govern-P** | 治理 | 隐私铁律在代码库中执行 |
 | **Control-P** | 数据处理 | 仅本地处理；无外部数据传输（BYOK 请求直接发往用户的 LLM） |
 | **Communicate-P** | 透明性 | 源代码开放、可审计、README 中公开隐私政策 |
 | **Protect-P** | 安全控制 | SQLCipher AES-256、Argon2id、PII 检测、自动锁定、暴力破解防护 |
@@ -158,9 +141,9 @@ EchoMind 是一款桌面应用，让你用**自己的本地文档**与任何 Ope
 | **RAG 知识库** | ✅ | ✅ | ✅ | ❌ |
 | **BYOK（自带 API Key）** | ✅ | ✅ | ✅ | 本地模型 |
 | **本地向量化（ONNX）** | ✅ | ✅ | ✅ | ❌ |
-| **本地大模型（GGUF）** | ✅ Pro | ❌ | ❌ | ✅ |
+| **本地大模型（GGUF）** | ✅ | ❌ | ❌ | ✅ |
 | **数据库加密** | ✅ SQLCipher | ❌ | ❌ | ❌ |
-| **定价模式** | MIT（alpha）→ BUSL-1.1 | 云订阅 | 免费 | 免费 |
+| **许可证** | MIT | MIT | MIT | MIT |
 | **零服务器成本** | ✅ | ❌ | ❌ | ✅ |
 
 ---
@@ -168,21 +151,21 @@ EchoMind 是一款桌面应用，让你用**自己的本地文档**与任何 Ope
 ## ✨ 功能特性
 
 ### 📥 文档智能处理
-- **多格式支持** — Markdown、文本、代码文件（Rust/TS/Python/Go）、HTML（免费）；PDF、DOCX、PPTX、EPUB、XLSX/CSV（Pro）
+- **多格式支持** — Markdown、文本、代码文件（Rust/TS/Python/Go）、HTML、PDF、DOCX、PPTX、EPUB、XLSX/CSV
 - **100% 本地处理** — 解析、分块、向量化、向量存储全部在设备端完成
 - **语义分块** — 段落 → 句子 → 子句递归分割，保留代码块完整性
 - **章节感知分块** — Markdown 标题层级 → 按章节边界分块
 - **ONNX 嵌入模型** — all-MiniLM-L6-v2（384 维，约 30 MB），通过 fastembed 本地运行
-- **自定义嵌入模型** — Pro 用户可上传自定义 ONNX 模型
+- **自定义嵌入模型** — 上传自定义 ONNX 模型
 - **SQLite 向量存储** — WAL 模式，FTS5 全文索引，零配置
-- **HNSW 索引** — 近似最近邻搜索，亚线性复杂度（Pro）
+- **HNSW 索引** — 近似最近邻搜索，亚线性复杂度
 - **文件去重** — MD5 内容哈希防止重复导入
 - **崩溃恢复** — 中断的索引任务在重启时自动恢复
 
 ### 💬 RAG 对话
 - **混合检索** — 向量搜索 + BM25 关键词匹配 → RRF 融合
-- **Cross-Encoder 重排序** — bge-reranker-base 精准重排（Pro）
-- **HyDE 查询改写** — LLM 生成假设性答案 → 嵌入 → 搜索（Pro）
+- **Cross-Encoder 重排序** — bge-reranker-base 精准重排
+- **HyDE 查询改写** — LLM 生成假设性答案 → 嵌入 → 搜索
 - **知识图谱** — 实体抽取 + 关系挖掘 → 图遍历检索
 - **Agentic RAG** — ReAct 多步推理，并行工具执行
 - **渐进式上下文注入** — 从 top-2 chunk 开始，不足时自动扩展
@@ -195,7 +178,7 @@ EchoMind 是一款桌面应用，让你用**自己的本地文档**与任何 Ope
 - **多轮对话** — 完整聊天历史，自动提取标题
 - **分支树** — ChatGPT 风格可视化对话分支
 
-### 🧠 本地大模型引擎（Pro）
+### 🧠 本地大模型引擎
 - **GGUF 推理** — mistral.rs v0.9.0，纯 Rust 实现
 - **GPU 加速** — Metal（macOS）/ CUDA（NVIDIA）/ Accelerate（Apple BLAS）
 - **PagedAttention** — 高效 KV cache 管理，支持长对话
@@ -235,8 +218,8 @@ EchoMind 是一款桌面应用，让你用**自己的本地文档**与任何 Ope
 ### 🛠 高级工具
 - **AutoDream** — 后台空闲整理：重复检测、矛盾发现
 - **持久化记忆** — 三层（Wing/Hall/Room）+ LLM 整合
-- **代码符号搜索** — tree-sitter AST 抽取（Rust/TS/Python/Go）（Pro）
-- **代码执行沙箱** — Python/Node，超时/内存/网络限制（Pro）
+- **代码符号搜索** — tree-sitter AST 抽取（Rust/TS/Python/Go）
+- **代码执行沙箱** — Python/Node，超时/内存/网络限制
 - **DAG 工作流** — 可视化工作流构建器 + 模板管理
 - **网页搜索融合** — DuckDuckGo Instant Answer + RRF 本地融合
 - **知识图谱可视化** — D3.js 力导向图 + 社区检测
@@ -250,85 +233,11 @@ EchoMind 是一款桌面应用，让你用**自己的本地文档**与任何 Ope
 - Linux x64
 - 基于 Tauri v2 — 原生性能，非 Electron 套壳
 
-### 💰 免费版 vs Pro 版 — 功能对比
-
-> **一次性买断，无订阅续费。** Alpha 阶段：全功能免费。稳定后：免费版覆盖个人知识管理（Markdown、文本、代码、HTML），Pro 版解锁专业文档格式、本地大模型和企业级检索。
-
-| 功能 | 🆓 免费版 | 🚀 Pro 版 |
-|---|:---:|:---:|
-| **文件上限** | 50 个文件 | **无限制** |
-| **Markdown 和文本** | ✅ | ✅ |
-| **PDF 导入** | ❌ | ✅ |
-| **DOCX / PPTX / EPUB** | ❌ | ✅ |
-| **XLSX / CSV** | ❌ | ✅ |
-| **HTML / HTM** | ✅ | ✅ |
-| **代码文件**（Rust/TS/Python/Go） | ✅ | ✅ |
-| **远程大模型（BYOK）** | ✅ | ✅ |
-| **本地 ONNX 向量化** | ✅ | ✅ |
-| **自定义 ONNX 模型上传** | ❌ | ✅ |
-| **本地大模型（GGUF 推理）** | ❌ | ✅ |
-| **GPU 加速**（Metal/CUDA） | ❌ | ✅ |
-| **PagedAttention**（长对话） | ❌ | ✅ |
-| **KV cache 持久化** | ❌ | ✅ |
-| **自研 GEMV 内核**（Q4/Q8 量化） | ❌ | ✅ |
-| **HNSW 索引**（亚线性搜索） | ❌ | ✅ |
-| **Cross-Encoder 重排序** | ❌ | ✅ |
-| **HyDE 查询改写** | ❌ | ✅ |
-| **ColBERT 多向量** | ❌ | ✅ |
-| **PDF OCR**（PaddleOCR 本地） | ❌ | ✅ |
-| **VLM**（视觉语言模型） | ❌ | ✅ |
-| **代码符号搜索**（tree-sitter） | ❌ | ✅ |
-| **代码执行沙箱** | ❌ | ✅ |
-| **混合检索**（向量 + BM25） | ✅ | ✅ |
-| **知识图谱** | ✅ | ✅ |
-| **Agentic RAG**（多步推理） | ✅ | ✅ |
-| **语义缓存**（三级） | ✅ | ✅ |
-| **SQLCipher 加密**（AES-256） | ✅ | ✅ |
-| **PII 检测**（8 种类型） | ✅ | ✅ |
-| **审计哈希链** | ✅ | ✅ |
-| **自动锁定和暴力破解防护** | ✅ | ✅ |
-| **对话分支** | ✅ | ✅ |
-| **Mermaid / KaTeX / Chart.js** | ✅ | ✅ |
-| **PDF 导出** | ✅ | ✅ |
-| **文件夹同步** | ✅ | ✅ |
-| **价格** | **¥0** | **一次性买断** |
-
-<details>
-<summary>📋 Pro 版独有能力详解</summary>
-
-**本地大模型引擎 — 零云依赖：**
-- 基于 mistral.rs v0.9.0 的 GGUF 推理（纯 Rust，无 Python 运行时）
-- GPU 加速：Metal（macOS）、CUDA（NVIDIA）、Accelerate（Apple BLAS）、Flash Attention 2
-- PagedAttention 高效 KV cache 管理，支持超长对话
-- 采样参数：temperature、top-p、top-k、重复惩罚
-- KV cache 跨会话保存/恢复，即时上下文切换
-- 自研 GEMV 内核支持 4 种量化格式（Q4_0/Q4_K/Q8_0/Q8_K）
-- 权重重排（Row-Major → Tile-Major）优化 CPU cache 命中率
-- Layer 级流式预取 `madvise(MADV_WILLNEED)`
-- RAM 预算管理 + LRU 驱逐 + 系统内存感知
-- 模型下载管理器：暂停/恢复/取消 + 崩溃恢复
-
-**高级检索 — 企业级精准度：**
-- Cross-Encoder 重排序（bge-reranker-base）提升检索精度
-- HyDE 查询改写 — LLM 生成假设性答案 → 嵌入 → 搜索
-- HNSW 近似最近邻索引，亚线性搜索复杂度
-- ColBERT 多向量嵌入，细粒度 token 级匹配
-- 自定义 ONNX 嵌入模型上传
-
-**多模态文档处理：**
-- PDF 多模态提取：文本层 + 页面渲染（pdfium）+ OCR（PaddleOCR）+ VLM
-- VLM 结构化理解：表格 → Markdown，流程图 → Mermaid，图表 → CSV
-
-**开发者工具：**
-- 基于 tree-sitter AST 的代码符号搜索（Rust/TypeScript/Python/Go）
-- 代码执行沙箱，超时/内存/网络限制（Python/Node）
-
-</details>
-
 ### 🗺 路线图
 
-#### v0.1.0-alpha.1（当前）
+#### v0.1.0-alpha（当前）
 - 初始 alpha 版本，核心 RAG 功能
+- 全功能开放，无任何限制
 
 ---
 
@@ -350,10 +259,9 @@ crates/models → crates/prompt → crates/core → crates/infra → crates/taur
 | `crates/prompt` | 提示词构建：SegmentedPrompt、RAG/Agent 提示词、缓存策略 |
 | `crates/compact` | 上下文压缩引擎：LLM 历史摘要 |
 | `crates/context` | 系统上下文注册表：纪元管理、持久化基线 |
-| `crates/core` | 端口 Trait + 业务逻辑；聊天引擎、导入服务、License 验证、安全层 |
+| `crates/core` | 端口 Trait + 业务逻辑；聊天引擎、导入服务、安全层 |
 | `crates/infra` | 适配器：SqliteStorage、LocalEmbedder、OpenAIProvider、HNSW、LocalLlmEngine、OCR、VLM |
 | `crates/tauri-app` | Tauri 外壳，190+ IPC 命令，AppState |
-| `crates/license-issuer` | License 签发 CLI 工具（不包含在公开发布中） |
 
 **前端**：单文件 SPA（`ui/index.html`）— 50 个 ES 模块经 esbuild 打包。Tailwind CSS（本地 JIT），原生 JavaScript。**无 CDN，无框架。**
 
@@ -395,7 +303,7 @@ cargo build
 # 开发模式（热重载）
 cargo tauri dev
 
-# 编译 Pro 功能
+# 编译全部功能
 cargo build --features pro
 ```
 
@@ -426,7 +334,7 @@ node scripts/build-ui.mjs
 
 1. **启动** EchoMind
 2. **配置** — 进入设置 → 填写 LLM 服务商信息（API Key、Base URL、模型名称）
-3. **导入** — 拖拽文件到窗口（PDF 需要 Pro 版）
+3. **导入** — 拖拽文件到窗口（支持所有格式）
 4. **等待** — 索引完成（本地 ONNX 向量化，观察进度徽标）
 5. **对话** — 在输入框输入问题，获得带引用来源的流式回答
 
@@ -441,36 +349,8 @@ node scripts/build-ui.mjs
 | DeepSeek | `https://api.deepseek.com/v1` | 国产大模型 |
 | Ollama（本地） | `http://localhost:11434/v1` | API Key 留空 |
 | LM Studio | `http://localhost:1234/v1` | 本地模型运行器 |
-| 本地 GGUF（Pro） | — | 内置 mistral.rs 引擎，无需外部服务 |
+| 本地 GGUF | — | 内置 mistral.rs 引擎，无需外部服务 |
 | 任意 OpenAI 兼容 | 自定义 Base URL | 只要兼容 OpenAI API 即可 |
-
----
-
-## 💰 定价
-
-<div align="center">
-
-| | 🆓 免费版 | 🚀 Pro 版 |
-|---|:---:|:---:|
-| **价格** | **¥0** | **一次性买断** |
-| **续费** | 永无 | 永无 |
-| **文件上限** | 50 | 无限制 |
-| **文档格式** | md/txt/代码/html | 全格式 |
-| **本地大模型** | ❌ | ✅ |
-| **高级检索** | ❌ | ✅ |
-| **多模态 PDF** | ❌ | ✅ |
-| **开发者工具** | ❌ | ✅ |
-| **核心 RAG + 安全** | ✅ 完整 | ✅ 完整 |
-
-</div>
-
-**免费版**不是试用版 — 它是功能完整的个人知识库，支持 Markdown、文本、代码文件（Rust/TS/Python/Go）和 HTML。包含 RAG 对话、混合检索、知识图谱、Agentic 推理、语义缓存、SQLCipher 加密、PII 检测、审计日志。无时间限制，核心能力无功能锁。
-
-**Pro 版**新增：无限文件、专业文档格式（PDF/DOCX/PPTX/EPUB/XLSX/CSV）、本地大模型推理（零云依赖）、GPU 加速、高级检索（重排序/HyDE/HNSW/ColBERT）、多模态 PDF 处理（OCR/VLM）、自定义 ONNX 模型上传、开发者工具（代码符号搜索 + 执行沙箱）。
-
-> **⭐ Alpha 阶段：所有 Pro 功能暂时免费。** 无需 License Key。软件稳定后将重新启用 Pro 门控。详见顶部 [Alpha 公告](#-alpha-公告--全功能暂时免费)。
-
-Pro 许可证通过 Ed25519 签名**离线验证** — 激活无需网络连接。无订阅，无续费，无遥测。
 
 ---
 
@@ -481,12 +361,11 @@ Pro 许可证通过 Ed25519 签名**离线验证** — 激活无需网络连接�
 | 语言 | Rust（Edition 2024） | 原生 `async fn` in trait，禁用 `async-trait` 宏 |
 | 桌面框架 | Tauri v2 | 比 Electron 更小、更快、更安全 |
 | 嵌入模型 | fastembed（ONNX Runtime） | all-MiniLM-L6-v2，384 维，约 30 MB |
-| 本地大模型 | mistral.rs v0.9.0 | GGUF，Metal/CUDA，PagedAttention（Pro） |
+| 本地大模型 | mistral.rs v0.9.0 | GGUF，Metal/CUDA，PagedAttention |
 | 向量存储 | SQLite（rusqlite + r2d2） | WAL 模式，FTS5，SQLCipher AES-256 |
 | 大模型 API | OpenAI 兼容 | SSE 流式，连接超时 30 秒 |
 | 前端 | 原生 JS ES 模块 | esbuild IIFE 打包，无 React/Vue/Svelte |
 | 渲染 | marked.js, DOMPurify, highlight.js | + Mermaid, KaTeX, Chart.js, D3.js |
-| 授权 | Ed25519 签名 | 离线验证，零网络依赖 |
 
 ### 代码质量
 
@@ -500,24 +379,9 @@ Pro 许可证通过 Ed25519 签名**离线验证** — 激活无需网络连接�
 
 ## 📄 许可证
 
-**当前（Alpha）：MIT 许可证** — 详见 [LICENSE](LICENSE)。
+**MIT 许可证** — 详见 [LICENSE](LICENSE)。
 
-Alpha 阶段，EchoMind 采用 **MIT 许可证** — 完全开源，任意使用（个人、商业、修改、分发）。所有 Pro 功能免费开放。
-
-**未来（稳定后）：Business Source License 1.1（BUSL-1.1）**
-
-软件成熟后：
-- 许可证从 MIT 切换为 BUSL-1.1
-- `ALPHA_ALL_FEATURES_FREE` 设为 `false`
-- 免费/Pro 分层门控重新启用
-- BUSL-1.1 允许：
-  - ✅ **个人非商业使用** — 学习、个人知识管理、研究
-  - ✅ **源码审查** — 隐私优先理念下完全透明可审计
-  - ✅ **30 天评估** — 组织可评估兼容性和功能
-  - ❌ **未经授权的商业使用** — 需购买 Pro 许可证
-- **2030 年 1 月 1 日**起，BUSL-1.1 自动转为 **Apache License 2.0**
-
-> **为什么现在用 MIT？** 软件仍在打磨中，我们希望在稳定前最大化用户采纳和社区反馈。在产品稳定前限制使用会拖慢改进速度。软件成熟后，将切换为 BUSL-1.1 以维持开发。
+EchoMind 采用 MIT 许可证 — 完全开源，任意使用（个人、商业、修改、分发），无任何限制。
 
 ---
 
