@@ -57,7 +57,7 @@ EchoMind is a desktop application that lets you **chat with your local documents
 ## ✨ Features
 
 ### 📥 Document Intelligence
-- **Multi-format support** — Markdown, text, PDF (Pro), DOCX, HTML, PPTX, EPUB, XLSX/CSV
+- **Multi-format support** — Markdown, text, code files (Rust/TS/Python/Go), PDF (Pro), DOCX, HTML, PPTX, EPUB, XLSX/CSV
 - **100% local processing** — parsing, chunking, embedding, and vector storage all on-device
 - **Semantic chunking** — paragraph → sentence → clause recursive splitting with code block preservation
 - **Section-aware splitting** — Markdown heading hierarchy → section-boundary chunks
@@ -119,8 +119,8 @@ EchoMind is a desktop application that lets you **chat with your local documents
 ### 🛠 Advanced Tools
 - **AutoDream** — background idle tidying: duplicate detection, contradiction discovery
 - **Persistent memory** — three-tier (Wing/Hall/Room) with LLM consolidation
-- **Code symbol search** — tree-sitter AST extraction (Rust/TS/Python/Go)
-- **Code execution sandbox** — Python/Node with timeout/memory/network limits
+- **Code symbol search** — tree-sitter AST extraction (Rust/TS/Python/Go) (Pro)
+- **Code execution sandbox** — Python/Node with timeout/memory/network limits (Pro)
 - **DAG workflow** — visual workflow builder with template management
 - **Web search fusion** — DuckDuckGo Instant Answer + RRF local fusion
 - **Knowledge graph visualization** — D3.js force-directed graph with community detection
@@ -143,8 +143,9 @@ EchoMind is a desktop application that lets you **chat with your local documents
 | **File limit** | 50 files | **Unlimited** |
 | **Markdown & Text** | ✅ | ✅ |
 | **PDF import** | ❌ | ✅ |
-| **DOCX / HTML / PPTX / EPUB** | ❌ | ✅ |
-| **XLSX / CSV** | ❌ | ✅ |
+| **DOCX / HTML / PPTX / EPUB** | ✅ | ✅ |
+| **XLSX / CSV** | ✅ | ✅ |
+| **Code files** (Rust/TS/Python/Go) | ✅ | ✅ |
 | **Remote LLM (BYOK)** | ✅ | ✅ |
 | **Local ONNX embedding** | ✅ | ✅ |
 | **Custom ONNX model upload** | ❌ | ✅ |
@@ -308,7 +309,7 @@ node scripts/build-ui.mjs
 
 1. **Launch** EchoMind
 2. **Configure** — Settings → enter your LLM provider details (API key, base URL, model name)
-3. **Import** — Drag files into the window (PDF/local LLM requires Pro)
+3. **Import** — Drag files into the window (PDF requires Pro)
 4. **Wait** for indexing to complete (local ONNX embedding — watch the progress badge)
 5. **Chat** — Type your question and get streaming answers with source citations
 
@@ -337,7 +338,7 @@ Any OpenAI-compatible API endpoint works:
 | **Price** | **$0** | **One-time license** |
 | **Recurring fees** | Never | Never |
 | **File limit** | 50 | Unlimited |
-| **Document formats** | Markdown, Text | All formats |
+| **Document formats** | All except PDF | All formats |
 | **Local LLM** | ❌ | ✅ |
 | **Advanced retrieval** | ❌ | ✅ |
 | **Multimodal PDF** | ❌ | ✅ |
@@ -348,7 +349,7 @@ Any OpenAI-compatible API endpoint works:
 
 **Free tier** is not a trial — it's a fully functional personal knowledge base with RAG chat, hybrid retrieval, knowledge graph, agentic reasoning, semantic caching, SQLCipher encryption, PII detection, and audit logging. No time limits, no feature locks on core capabilities.
 
-**Pro tier** adds: unlimited files, all document formats (PDF/DOCX/HTML/PPTX/EPUB/XLSX/CSV), local LLM inference (zero cloud), GPU acceleration, advanced retrieval (reranking/HyDE/HNSW/ColBERT), multimodal PDF processing (OCR/VLM), and developer tools (code symbol search + execution sandbox).
+**Pro tier** adds: unlimited files, PDF import, local LLM inference (zero cloud), GPU acceleration, advanced retrieval (reranking/HyDE/HNSW/ColBERT), multimodal PDF processing (OCR/VLM), custom ONNX model upload, and developer tools (code symbol search + execution sandbox).
 
 Pro license is verified **offline** via Ed25519 signature — no internet connection required for activation. No subscription, no recurring fees, no telemetry.
 

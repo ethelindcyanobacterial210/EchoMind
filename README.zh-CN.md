@@ -57,7 +57,7 @@ EchoMind 是一款桌面应用，让你用**自己的本地文档**与任何 Ope
 ## ✨ 功能特性
 
 ### 📥 文档智能处理
-- **多格式支持** — Markdown、文本、PDF（Pro）、DOCX、HTML、PPTX、EPUB、XLSX/CSV
+- **多格式支持** — Markdown、文本、代码文件（Rust/TS/Python/Go）、PDF（Pro）、DOCX、HTML、PPTX、EPUB、XLSX/CSV
 - **100% 本地处理** — 解析、分块、向量化、向量存储全部在设备端完成
 - **语义分块** — 段落 → 句子 → 子句递归分割，保留代码块完整性
 - **章节感知分块** — Markdown 标题层级 → 按章节边界分块
@@ -119,8 +119,8 @@ EchoMind 是一款桌面应用，让你用**自己的本地文档**与任何 Ope
 ### 🛠 高级工具
 - **AutoDream** — 后台空闲整理：重复检测、矛盾发现
 - **持久化记忆** — 三层（Wing/Hall/Room）+ LLM 整合
-- **代码符号搜索** — tree-sitter AST 抽取（Rust/TS/Python/Go）
-- **代码执行沙箱** — Python/Node，超时/内存/网络限制
+- **代码符号搜索** — tree-sitter AST 抽取（Rust/TS/Python/Go）（Pro）
+- **代码执行沙箱** — Python/Node，超时/内存/网络限制（Pro）
 - **DAG 工作流** — 可视化工作流构建器 + 模板管理
 - **网页搜索融合** — DuckDuckGo Instant Answer + RRF 本地融合
 - **知识图谱可视化** — D3.js 力导向图 + 社区检测
@@ -143,8 +143,9 @@ EchoMind 是一款桌面应用，让你用**自己的本地文档**与任何 Ope
 | **文件上限** | 50 个文件 | **无限制** |
 | **Markdown 和文本** | ✅ | ✅ |
 | **PDF 导入** | ❌ | ✅ |
-| **DOCX / HTML / PPTX / EPUB** | ❌ | ✅ |
-| **XLSX / CSV** | ❌ | ✅ |
+| **DOCX / HTML / PPTX / EPUB** | ✅ | ✅ |
+| **XLSX / CSV** | ✅ | ✅ |
+| **代码文件**（Rust/TS/Python/Go） | ✅ | ✅ |
 | **远程大模型（BYOK）** | ✅ | ✅ |
 | **本地 ONNX 向量化** | ✅ | ✅ |
 | **自定义 ONNX 模型上传** | ❌ | ✅ |
@@ -308,7 +309,7 @@ node scripts/build-ui.mjs
 
 1. **启动** EchoMind
 2. **配置** — 进入设置 → 填写 LLM 服务商信息（API Key、Base URL、模型名称）
-3. **导入** — 拖拽文件到窗口（PDF/本地大模型需要 Pro 版）
+3. **导入** — 拖拽文件到窗口（PDF 需要 Pro 版）
 4. **等待** — 索引完成（本地 ONNX 向量化，观察进度徽标）
 5. **对话** — 在输入框输入问题，获得带引用来源的流式回答
 
@@ -337,7 +338,7 @@ node scripts/build-ui.mjs
 | **价格** | **¥0** | **一次性买断** |
 | **续费** | 永无 | 永无 |
 | **文件上限** | 50 | 无限制 |
-| **文档格式** | Markdown、文本 | 全格式 |
+| **文档格式** | 除 PDF 外全格式 | 全格式 |
 | **本地大模型** | ❌ | ✅ |
 | **高级检索** | ❌ | ✅ |
 | **多模态 PDF** | ❌ | ✅ |
@@ -348,7 +349,7 @@ node scripts/build-ui.mjs
 
 **免费版**不是试用版 — 它是功能完整的个人知识库，包含 RAG 对话、混合检索、知识图谱、Agentic 推理、语义缓存、SQLCipher 加密、PII 检测、审计日志。无时间限制，核心能力无功能锁。
 
-**Pro 版**新增：无限文件、全文档格式（PDF/DOCX/HTML/PPTX/EPUB/XLSX/CSV）、本地大模型推理（零云依赖）、GPU 加速、高级检索（重排序/HyDE/HNSW/ColBERT）、多模态 PDF 处理（OCR/VLM）、开发者工具（代码符号搜索 + 执行沙箱）。
+**Pro 版**新增：无限文件、PDF 导入、本地大模型推理（零云依赖）、GPU 加速、高级检索（重排序/HyDE/HNSW/ColBERT）、多模态 PDF 处理（OCR/VLM）、自定义 ONNX 模型上传、开发者工具（代码符号搜索 + 执行沙箱）。
 
 Pro 许可证通过 Ed25519 签名**离线验证** — 激活无需网络连接。无订阅，无续费，无遥测。
 
