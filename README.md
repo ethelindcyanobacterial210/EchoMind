@@ -7,6 +7,7 @@
 </p>
 
 <p align="center">
+  <a href="#-privacy-iron-law--zero-data-collection">🔒 Privacy</a> ·
   <a href="#-what-is-echomind">Features</a> ·
   <a href="#-quick-start">Quick Start</a> ·
   <a href="#-architecture">Architecture</a> ·
@@ -23,6 +24,44 @@
   <img src="https://img.shields.io/badge/Tests-987%20passed-brightgreen" alt="Tests">
   <img src="https://img.shields.io/badge/Platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey" alt="Cross-platform">
 </p>
+
+---
+
+## 🚨 Alpha Notice — All Features Currently Free
+
+> **During the alpha phase, ALL Pro features are temporarily free.** The software is still stabilizing — there are bugs and incomplete features. Rather than gating functionality behind a paywall during this period, we're opening everything up for community testing and feedback.
+>
+> **When the software matures, Pro gating will be re-enabled.** The `ALPHA_ALL_FEATURES_FREE` flag in `config_store.rs` controls this — flipping it to `false` restores all Pro restrictions with zero code changes elsewhere.
+>
+> **What this means for you:**
+> - ✅ All document formats (PDF, DOCX, PPTX, EPUB, XLSX/CSV) — free
+> - ✅ Unlimited files (no 50-file limit) — free
+> - ✅ Local LLM, GPU acceleration, advanced retrieval — free (requires `--features pro` compile flag)
+> - ✅ No license key needed — just download and use
+>
+> **After stabilization, the Free vs Pro split will apply as documented below.**
+
+---
+
+## 🔒 Privacy Iron Law — Zero Data Collection
+
+> **EchoMind does NOT collect, transmit, or store any user data on any external server.** This is not a feature — it is the **lifeblood** of this project. It can never be violated, under any circumstances.
+>
+> ### What this means concretely:
+> - 🔴 **No telemetry, no analytics, no tracking** — zero network calls for data collection
+> - 🔴 **No user accounts, no login, no cloud sync** — nothing to phone home
+> - 🔴 **No CDN, no remote dependencies** — all frontend libraries are locally vendored
+> - 🟢 **All data stays on your machine** — documents, embeddings, chat history, settings, API keys — all local
+> - 🟢 **Database encrypted at rest** — SQLCipher AES-256, even your local disk is protected
+> - 🟢 **API keys never leave your device** — they are stored locally, masked in UI (`****` + last 4 chars)
+>
+> ### How we enforce this:
+> - **No `reqwest`/`fetch` to any EchoMind-operated server** — the codebase has zero network endpoints for data exfiltration
+> - **`forbid(unsafe_code)`** in production crates — memory safety guaranteed by Rust
+> - **Source code is fully auditable** — clone, `grep`, and verify. The code is open for inspection at any time
+> - **Supply chain security** — `cargo audit` + `cargo deny check` on every CI run
+>
+> **If you find any code that sends user data to an external server, it is a bug and a violation of this iron law. Please report it immediately.**
 
 ---
 
@@ -96,8 +135,12 @@ EchoMind is a desktop application that lets you **chat with your local documents
 - **RAM budget** — LRU eviction + system memory awareness
 - **Model download manager** — pause/resume/cancel + crash recovery
 
-### 🔒 Privacy & Security
-- **Data stays local** — documents and conversations never leave your machine
+### 🔒 Privacy & Security — Enforced by Iron Law
+
+> **See the [Privacy Iron Law](#-privacy-iron-law--zero-data-collection) at the top of this document.** EchoMind collects zero user data. All processing is local. The source code is open for audit at any time.
+
+- **Data stays local** — documents and conversations never leave your machine. No telemetry, no analytics, no tracking
+- **No network data exfiltration** — zero `reqwest`/`fetch` calls to any EchoMind-operated server. BYOK API calls go directly to your configured LLM provider
 - **SQLCipher encryption** — AES-256 transparent database encryption
 - **Argon2id key derivation** — memory-hard KDF (m=19456KB, t=2, p=1) + PBKDF2 fallback
 - **PII detection & redaction** — 8 types (email, phone, ID card, bank card, IP, SSN, passport, intl phone)
@@ -107,6 +150,7 @@ EchoMind is a desktop application that lets you **chat with your local documents
 - **Clipboard auto-clear** — sensitive data auto-cleared after timeout
 - **API key masking** — `****` + last 4 chars, never plaintext
 - **Security posture** — Dangerous / Auto / Strict tiers with shadow screening
+- **Source code auditable** — clone the repo and `grep -r 'reqwest\|fetch\|http'` to verify zero data exfiltration endpoints
 
 ### 🎨 Rich Rendering
 - **Markdown** with code syntax highlighting (highlight.js)
@@ -136,7 +180,7 @@ EchoMind is a desktop application that lets you **chat with your local documents
 
 ### 💰 Free vs Pro — Feature Comparison
 
-> **One-time payment, no subscription.** Free tier covers personal knowledge management (Markdown, text, code, HTML). Pro unlocks professional document formats, local LLM, and enterprise-grade retrieval.
+> **One-time payment, no subscription.** During alpha: all features free. After stabilization: Free tier covers personal knowledge management (Markdown, text, code, HTML). Pro unlocks professional document formats, local LLM, and enterprise-grade retrieval.
 
 | Feature | 🆓 Free | 🚀 Pro |
 |---|:---:|:---:|
@@ -351,6 +395,8 @@ Any OpenAI-compatible API endpoint works:
 **Free tier** is not a trial — it's a fully functional personal knowledge base supporting Markdown, text, code files (Rust/TS/Python/Go), and HTML. Includes RAG chat, hybrid retrieval, knowledge graph, agentic reasoning, semantic caching, SQLCipher encryption, PII detection, and audit logging. No time limits, no feature locks on core capabilities.
 
 **Pro tier** adds: unlimited files, professional document formats (PDF/DOCX/PPTX/EPUB/XLSX/CSV), local LLM inference (zero cloud), GPU acceleration, advanced retrieval (reranking/HyDE/HNSW/ColBERT), multimodal PDF processing (OCR/VLM), custom ONNX model upload, and developer tools (code symbol search + execution sandbox).
+
+> **⭐ Alpha phase: All Pro features are currently free.** No license key required. Pro gating will be re-enabled once the software stabilizes. See the [Alpha Notice](#-alpha-notice--all-features-currently-free) at the top.
 
 Pro license is verified **offline** via Ed25519 signature — no internet connection required for activation. No subscription, no recurring fees, no telemetry.
 

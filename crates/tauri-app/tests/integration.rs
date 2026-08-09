@@ -366,15 +366,22 @@ async fn tc_lic_003_free_tier_quota_blocked() {
     );
 }
 
-/// TC-LIC-004 免费版 Pro 门控格式付费门：is_pro=false 时导入 Pro 门控格式返回 PRO_REQUIRED（REQ-LIC-002-AC-2）。
+/// TC-LIC-004 Pro 门控格式付费门（REQ-LIC-002-AC-2）。
 ///
-/// Pro 门控格式：pdf / docx / pptx / epub / xlsx / csv。
+/// Alpha 阶段（ALPHA_ALL_FEATURES_FREE = true）：所有格式均可导入，无 PRO_REQUIRED 错误。
+/// 后期稳定后（ALPHA_ALL_FEATURES_FREE = false）：恢复专业格式付费门。
 #[tokio::test]
-async fn tc_lic_004_free_tier_pro_gated_blocked() {
+async fn tc_lic_004_pro_gated_formats_alpha_all_free() {
     let dir = TempDir::new().unwrap();
     let state = AppState::new(dir.path().to_path_buf()).await.unwrap();
     let app = tauri::test::mock_app();
     let handle = app.handle().clone();
+
+    // Alpha 阶段：is_pro 自动激活，所有格式均可导入
+    assert!(
+        *state.is_pro().read().await,
+        "Alpha 阶段 is_pro 应自动激活为 true"
+    );
 
     for ext in ["pdf", "docx", "pptx", "epub", "xlsx", "csv"] {
         let fname = format!("test.{ext}");
@@ -383,11 +390,10 @@ async fn tc_lic_004_free_tier_pro_gated_blocked() {
 
         let result =
             import_files_inner(&handle, &[file.to_string_lossy().into_owned()], &state).await;
-
-        let err = result.err().unwrap_or_default();
         assert!(
-            err.contains("PRO_REQUIRED"),
-            "免费版 .{ext} 导入应返回 PRO_REQUIRED 错误，实际: {err}"
+            result.is_ok(),
+            "Alpha 阶段 .{ext} 导入应成功，实际: {:?}",
+            result.err()
         );
     }
 }
