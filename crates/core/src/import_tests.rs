@@ -251,7 +251,10 @@ async fn tc_ing_003_free_tier_quota_blocked() {
 async fn tc_ing_004_pro_gated_formats_blocked_for_free_tier() {
     let dir = TempDir::new().unwrap();
 
-    for (i, ext) in ["pdf", "docx", "pptx", "epub", "xlsx", "csv"].iter().enumerate() {
+    for (i, ext) in ["pdf", "docx", "pptx", "epub", "xlsx", "csv"]
+        .iter()
+        .enumerate()
+    {
         // 每个文件使用不同内容，避免 MD5 去重影响测试
         let content = format!("fake-content-{i}");
         let fname = format!("test.{ext}");
@@ -272,7 +275,10 @@ async fn tc_ing_004_pro_gated_formats_blocked_for_free_tier() {
 async fn tc_ing_004b_free_formats_allowed_for_free_tier() {
     let dir = TempDir::new().unwrap();
 
-    for (i, ext) in ["md", "txt", "rs", "ts", "tsx", "py", "go", "html", "htm"].iter().enumerate() {
+    for (i, ext) in ["md", "txt", "rs", "ts", "tsx", "py", "go", "html", "htm"]
+        .iter()
+        .enumerate()
+    {
         let content = format!("free-content-{i}");
         let fname = format!("test.{ext}");
         let path = write_file(&dir, &fname, content.as_bytes());
