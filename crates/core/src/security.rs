@@ -44,6 +44,16 @@ pub enum SecurityState {
     Locked(LockReason),
 }
 
+/// 安全状态指示器颜色常量（对应前端 CSS 设计令牌）。
+///
+/// 这些颜色值与 `ui/styles/tokens.css` 中的 CSS 变量保持一致：
+/// - `COLOR_DANGER` → `--danger`（#ef4444 red-500，未加密危险状态）
+/// - `COLOR_SUCCESS` → `--success`（#22c55e green-500，已加密已解锁安全状态）
+/// - `COLOR_WARNING` → `--warning`（#f59e0b amber-500，已锁定警告状态）
+const COLOR_DANGER: &str = "#ef4444";
+const COLOR_SUCCESS: &str = "#22c55e";
+const COLOR_WARNING: &str = "#f59e0b";
+
 impl SecurityState {
     /// 返回状态图标标识（用于前端安全指示器）
     #[must_use]
@@ -55,13 +65,16 @@ impl SecurityState {
         }
     }
 
-    /// 返回状态颜色（用于前端安全指示器）
+    /// 返回状态颜色（用于前端安全指示器）。
+    ///
+    /// 返回值为有名常量，与 `ui/styles/tokens.css` 设计令牌一一对应。
+    /// 前端可据此颜色值渲染安全指示器，或映射为 CSS 变量名。
     #[must_use]
     pub fn color(&self) -> &'static str {
         match self {
-            SecurityState::Unencrypted => "#ef4444",
-            SecurityState::EncryptedUnlocked => "#22c55e",
-            SecurityState::Locked(_) => "#f59e0b",
+            SecurityState::Unencrypted => COLOR_DANGER,
+            SecurityState::EncryptedUnlocked => COLOR_SUCCESS,
+            SecurityState::Locked(_) => COLOR_WARNING,
         }
     }
 }

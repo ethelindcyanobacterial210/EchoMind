@@ -446,6 +446,8 @@ impl SymbolKind {
     }
 
     /// 从字符串解析（避免与 `FromStr` trait 冲突，clippy `should_implement_trait`）。
+    ///
+    /// 未知字符串回退为 `Function` 并输出 stderr 警告，避免静默吞掉数据损坏。
     pub fn parse_str(s: &str) -> Self {
         match s {
             "function" => SymbolKind::Function,
@@ -456,7 +458,10 @@ impl SymbolKind {
             "enum" => SymbolKind::Enum,
             "constant" => SymbolKind::Constant,
             "module" => SymbolKind::Module,
-            _ => SymbolKind::Function,
+            _ => {
+                eprintln!("[WARN] SymbolKind::parse_str: 未知符号类型 '{s}'，回退为 Function");
+                SymbolKind::Function
+            }
         }
     }
 }
@@ -2096,13 +2101,12 @@ impl ScratchLogEntry {
     /// # 参数
     /// - `content`: 日志内容文本
     pub fn new(content: String) -> Self {
-        let now = chrono::Utc::now().timestamp();
-        let date = chrono::Utc::now().format("%Y-%m-%d").to_string();
+        let now = chrono::Utc::now();
         Self {
             id: uuid::Uuid::new_v4().to_string(),
-            date,
+            date: now.format("%Y-%m-%d").to_string(),
             content,
-            created_at: now,
+            created_at: now.timestamp(),
         }
     }
 
@@ -2253,8 +2257,9 @@ impl PromptTemplate {
 
     /// 验证模板名称是否合法（仅小写字母/数字/下划线，1-32 字符）。
     pub fn is_valid_name(name: &str) -> bool {
+        let char_count = name.chars().count();
         !name.is_empty()
-            && name.len() <= 32
+            && char_count <= 32
             && name
                 .chars()
                 .all(|c| c.is_ascii_lowercase() || c.is_ascii_digit() || c == '_')

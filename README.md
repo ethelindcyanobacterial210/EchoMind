@@ -134,10 +134,78 @@ EchoMind is a desktop application that lets you **chat with your local documents
 - Linux x64
 - Built with Tauri v2 — native performance, not Electron
 
-### 💰 Freemium Model
-- **Free tier** — 50 files, Markdown & text only
-- **Pro license** — unlimited files, PDF support, local LLM, priority features
-- **One-time payment** — no subscription, no recurring fees
+### 💰 Free vs Pro — Feature Comparison
+
+> **One-time payment, no subscription.** Free tier is fully functional for personal knowledge management. Pro unlocks enterprise-grade capabilities.
+
+| Feature | 🆓 Free | 🚀 Pro |
+|---|:---:|:---:|
+| **File limit** | 50 files | **Unlimited** |
+| **Markdown & Text** | ✅ | ✅ |
+| **PDF import** | ❌ | ✅ |
+| **DOCX / HTML / PPTX / EPUB** | ❌ | ✅ |
+| **XLSX / CSV** | ❌ | ✅ |
+| **Remote LLM (BYOK)** | ✅ | ✅ |
+| **Local ONNX embedding** | ✅ | ✅ |
+| **Custom ONNX model upload** | ❌ | ✅ |
+| **Local LLM (GGUF inference)** | ❌ | ✅ |
+| **GPU acceleration** (Metal/CUDA) | ❌ | ✅ |
+| **PagedAttention** (long conversations) | ❌ | ✅ |
+| **KV cache persistence** | ❌ | ✅ |
+| **Custom GEMV kernel** (Q4/Q8 quant) | ❌ | ✅ |
+| **HNSW index** (sub-linear search) | ❌ | ✅ |
+| **Cross-Encoder reranking** | ❌ | ✅ |
+| **HyDE query rewriting** | ❌ | ✅ |
+| **ColBERT multi-vector** | ❌ | ✅ |
+| **PDF OCR** (PaddleOCR local) | ❌ | ✅ |
+| **VLM** (Vision Language Model) | ❌ | ✅ |
+| **Code symbol search** (tree-sitter) | ❌ | ✅ |
+| **Code execution sandbox** | ❌ | ✅ |
+| **Hybrid retrieval** (vector + BM25) | ✅ | ✅ |
+| **Knowledge graph** | ✅ | ✅ |
+| **Agentic RAG** (multi-step) | ✅ | ✅ |
+| **Semantic cache** (3-tier) | ✅ | ✅ |
+| **SQLCipher encryption** (AES-256) | ✅ | ✅ |
+| **PII detection** (8 types) | ✅ | ✅ |
+| **Audit hash-chain** | ✅ | ✅ |
+| **Auto-lock & brute-force protection** | ✅ | ✅ |
+| **Conversation branching** | ✅ | ✅ |
+| **Mermaid / KaTeX / Chart.js** | ✅ | ✅ |
+| **PDF export** | ✅ | ✅ |
+| **Folder sync** | ✅ | ✅ |
+| **Price** | **$0** | **One-time license** |
+
+<details>
+<summary>📋 Detailed Pro-only capabilities</summary>
+
+**Local LLM Engine — Zero cloud dependency:**
+- GGUF inference via mistral.rs v0.9.0 (pure Rust, no Python runtime)
+- GPU acceleration: Metal (macOS), CUDA (NVIDIA), Accelerate (Apple BLAS), Flash Attention 2
+- PagedAttention for efficient KV cache management in long conversations
+- Sampling parameters: temperature, top-p, top-k, repetition penalty
+- KV cache save/restore across sessions for instant context switching
+- Self-developed GEMV kernel for 4 quantization formats (Q4_0/Q4_K/Q8_0/Q8_K)
+- Weight repacking (Row-Major → Tile-Major) for CPU cache optimization
+- Layer-level streaming prefetch via `madvise(MADV_WILLNEED)`
+- RAM budget management with LRU eviction + system memory awareness
+- Model download manager with pause/resume/cancel + crash recovery
+
+**Advanced Retrieval — Enterprise precision:**
+- Cross-Encoder reranking (bge-reranker-base) for precision boost
+- HyDE query rewriting — LLM generates hypothetical answer → embed → search
+- HNSW approximate nearest neighbor index for sub-linear search complexity
+- ColBERT multi-vector embedding for fine-grained token-level matching
+- Custom ONNX embedding model upload
+
+**Multimodal Document Processing:**
+- PDF multimodal extraction: text layer + page rendering (pdfium) + OCR (PaddleOCR) + VLM
+- VLM structured understanding: tables → Markdown, flowcharts → Mermaid, charts → CSV
+
+**Developer Tools:**
+- Code symbol search via tree-sitter AST (Rust/TypeScript/Python/Go)
+- Code execution sandbox with timeout/memory/network limits (Python/Node)
+
+</details>
 
 ### 🗺 Roadmap
 
@@ -262,12 +330,27 @@ Any OpenAI-compatible API endpoint works:
 
 ## 💰 Pricing
 
-| Tier | Price | Limits |
-|---|---|---|
-| **Free** | $0 | 50 files, Markdown & text only |
-| **Pro** | One-time license | Unlimited files, PDF, local LLM, all features |
+<div align="center">
 
-Pro license is verified offline via Ed25519 signature — no internet connection required for activation.
+| | 🆓 Free | 🚀 Pro |
+|---|:---:|:---:|
+| **Price** | **$0** | **One-time license** |
+| **Recurring fees** | Never | Never |
+| **File limit** | 50 | Unlimited |
+| **Document formats** | Markdown, Text | All formats |
+| **Local LLM** | ❌ | ✅ |
+| **Advanced retrieval** | ❌ | ✅ |
+| **Multimodal PDF** | ❌ | ✅ |
+| **Developer tools** | ❌ | ✅ |
+| **Core RAG + Security** | ✅ Full | ✅ Full |
+
+</div>
+
+**Free tier** is not a trial — it's a fully functional personal knowledge base with RAG chat, hybrid retrieval, knowledge graph, agentic reasoning, semantic caching, SQLCipher encryption, PII detection, and audit logging. No time limits, no feature locks on core capabilities.
+
+**Pro tier** adds: unlimited files, all document formats (PDF/DOCX/HTML/PPTX/EPUB/XLSX/CSV), local LLM inference (zero cloud), GPU acceleration, advanced retrieval (reranking/HyDE/HNSW/ColBERT), multimodal PDF processing (OCR/VLM), and developer tools (code symbol search + execution sandbox).
+
+Pro license is verified **offline** via Ed25519 signature — no internet connection required for activation. No subscription, no recurring fees, no telemetry.
 
 ---
 

@@ -62,13 +62,29 @@ impl ConfigStore {
     }
 
     /// 从 settings 表恢复 Pro 授权状态。
+    ///
+    /// 开发模式优化：debug 构建 + pro feature 编译时，自动激活 Pro，
+    /// 免去开发时手动激活 license 的步骤。release 构建仍需 license key。
     async fn load_is_pro(storage: &SqliteStorage) -> bool {
-        storage
+        // 先检查 settings 表中是否已激活
+        let stored = storage
             .get_setting("license.is_pro")
             .await
             .ok()
             .flatten()
-            .is_some_and(|v| v == "true")
+            .is_some_and(|v| v == "true");
+        if stored {
+            return true;
+        }
+        // 开发模式自动激活：debug 构建 + pro feature
+        #[cfg(all(debug_assertions, feature = "pro"))]
+        {
+            tracing::info!("Dev mode: auto-activating Pro (debug + pro feature)");
+            // 持久化到 settings 表，确保后续逻辑一致
+            let _ = storage.set_setting("license.is_pro", "true").await;
+            return true;
+        }
+        false
     }
 
     /// 从 settings 表恢复 LLM 推理模式。

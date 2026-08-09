@@ -134,10 +134,78 @@ EchoMind 是一款桌面应用，让你用**自己的本地文档**与任何 Ope
 - Linux x64
 - 基于 Tauri v2 — 原生性能，非 Electron 套壳
 
-### 💰 免费增值模式
-- **免费版** — 50 文件，仅 Markdown 和文本
-- **Pro 版** — 无限文件，PDF 支持，本地大模型，全部功能
-- **一次性付费** — 无订阅，无续费
+### 💰 免费版 vs Pro 版 — 功能对比
+
+> **一次性买断，无订阅续费。** 免费版是功能完整的个人知识管理工具，Pro 版解锁企业级能力。
+
+| 功能 | 🆓 免费版 | 🚀 Pro 版 |
+|---|:---:|:---:|
+| **文件上限** | 50 个文件 | **无限制** |
+| **Markdown 和文本** | ✅ | ✅ |
+| **PDF 导入** | ❌ | ✅ |
+| **DOCX / HTML / PPTX / EPUB** | ❌ | ✅ |
+| **XLSX / CSV** | ❌ | ✅ |
+| **远程大模型（BYOK）** | ✅ | ✅ |
+| **本地 ONNX 向量化** | ✅ | ✅ |
+| **自定义 ONNX 模型上传** | ❌ | ✅ |
+| **本地大模型（GGUF 推理）** | ❌ | ✅ |
+| **GPU 加速**（Metal/CUDA） | ❌ | ✅ |
+| **PagedAttention**（长对话） | ❌ | ✅ |
+| **KV cache 持久化** | ❌ | ✅ |
+| **自研 GEMV 内核**（Q4/Q8 量化） | ❌ | ✅ |
+| **HNSW 索引**（亚线性搜索） | ❌ | ✅ |
+| **Cross-Encoder 重排序** | ❌ | ✅ |
+| **HyDE 查询改写** | ❌ | ✅ |
+| **ColBERT 多向量** | ❌ | ✅ |
+| **PDF OCR**（PaddleOCR 本地） | ❌ | ✅ |
+| **VLM**（视觉语言模型） | ❌ | ✅ |
+| **代码符号搜索**（tree-sitter） | ❌ | ✅ |
+| **代码执行沙箱** | ❌ | ✅ |
+| **混合检索**（向量 + BM25） | ✅ | ✅ |
+| **知识图谱** | ✅ | ✅ |
+| **Agentic RAG**（多步推理） | ✅ | ✅ |
+| **语义缓存**（三级） | ✅ | ✅ |
+| **SQLCipher 加密**（AES-256） | ✅ | ✅ |
+| **PII 检测**（8 种类型） | ✅ | ✅ |
+| **审计哈希链** | ✅ | ✅ |
+| **自动锁定和暴力破解防护** | ✅ | ✅ |
+| **对话分支** | ✅ | ✅ |
+| **Mermaid / KaTeX / Chart.js** | ✅ | ✅ |
+| **PDF 导出** | ✅ | ✅ |
+| **文件夹同步** | ✅ | ✅ |
+| **价格** | **¥0** | **一次性买断** |
+
+<details>
+<summary>📋 Pro 版独有能力详解</summary>
+
+**本地大模型引擎 — 零云依赖：**
+- 基于 mistral.rs v0.9.0 的 GGUF 推理（纯 Rust，无 Python 运行时）
+- GPU 加速：Metal（macOS）、CUDA（NVIDIA）、Accelerate（Apple BLAS）、Flash Attention 2
+- PagedAttention 高效 KV cache 管理，支持超长对话
+- 采样参数：temperature、top-p、top-k、重复惩罚
+- KV cache 跨会话保存/恢复，即时上下文切换
+- 自研 GEMV 内核支持 4 种量化格式（Q4_0/Q4_K/Q8_0/Q8_K）
+- 权重重排（Row-Major → Tile-Major）优化 CPU cache 命中率
+- Layer 级流式预取 `madvise(MADV_WILLNEED)`
+- RAM 预算管理 + LRU 驱逐 + 系统内存感知
+- 模型下载管理器：暂停/恢复/取消 + 崩溃恢复
+
+**高级检索 — 企业级精准度：**
+- Cross-Encoder 重排序（bge-reranker-base）提升检索精度
+- HyDE 查询改写 — LLM 生成假设性答案 → 嵌入 → 搜索
+- HNSW 近似最近邻索引，亚线性搜索复杂度
+- ColBERT 多向量嵌入，细粒度 token 级匹配
+- 自定义 ONNX 嵌入模型上传
+
+**多模态文档处理：**
+- PDF 多模态提取：文本层 + 页面渲染（pdfium）+ OCR（PaddleOCR）+ VLM
+- VLM 结构化理解：表格 → Markdown，流程图 → Mermaid，图表 → CSV
+
+**开发者工具：**
+- 基于 tree-sitter AST 的代码符号搜索（Rust/TypeScript/Python/Go）
+- 代码执行沙箱，超时/内存/网络限制（Python/Node）
+
+</details>
 
 ### 🗺 路线图
 
@@ -262,12 +330,27 @@ node scripts/build-ui.mjs
 
 ## 💰 定价
 
-| 版本 | 价格 | 限制 |
-|---|---|---|
-| **免费版** | ¥0 | 50 文件，仅 Markdown 和文本 |
-| **Pro 版** | 一次性买断 | 无限文件，PDF，本地大模型，全部功能 |
+<div align="center">
 
-Pro 许可证通过 Ed25519 签名离线验证 — 激活无需网络连接。
+| | 🆓 免费版 | 🚀 Pro 版 |
+|---|:---:|:---:|
+| **价格** | **¥0** | **一次性买断** |
+| **续费** | 永无 | 永无 |
+| **文件上限** | 50 | 无限制 |
+| **文档格式** | Markdown、文本 | 全格式 |
+| **本地大模型** | ❌ | ✅ |
+| **高级检索** | ❌ | ✅ |
+| **多模态 PDF** | ❌ | ✅ |
+| **开发者工具** | ❌ | ✅ |
+| **核心 RAG + 安全** | ✅ 完整 | ✅ 完整 |
+
+</div>
+
+**免费版**不是试用版 — 它是功能完整的个人知识库，包含 RAG 对话、混合检索、知识图谱、Agentic 推理、语义缓存、SQLCipher 加密、PII 检测、审计日志。无时间限制，核心能力无功能锁。
+
+**Pro 版**新增：无限文件、全文档格式（PDF/DOCX/HTML/PPTX/EPUB/XLSX/CSV）、本地大模型推理（零云依赖）、GPU 加速、高级检索（重排序/HyDE/HNSW/ColBERT）、多模态 PDF 处理（OCR/VLM）、开发者工具（代码符号搜索 + 执行沙箱）。
+
+Pro 许可证通过 Ed25519 签名**离线验证** — 激活无需网络连接。无订阅，无续费，无遥测。
 
 ---
 
