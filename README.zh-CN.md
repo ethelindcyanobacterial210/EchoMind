@@ -21,7 +21,7 @@
   <img src="https://img.shields.io/badge/Rust-1.85%2B-orange?logo=rust" alt="Rust">
   <img src="https://img.shields.io/badge/Tauri-v2-blue?logo=tauri" alt="Tauri v2">
   <img src="https://img.shields.io/badge/Edition-2024-orange" alt="Edition 2024">
-  <img src="https://img.shields.io/badge/License-BUSL--1.1-blue" alt="BUSL 1.1 许可证">
+  <img src="https://img.shields.io/badge/License-MIT-blue" alt="MIT 许可证">
   <img src="https://img.shields.io/badge/测试-987%20passed-brightgreen" alt="测试">
   <img src="https://img.shields.io/badge/平台-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey" alt="跨平台">
 </p>
@@ -78,7 +78,7 @@ EchoMind 的隐私和安全声明由公认框架背书。以下认证均为**免
 | **验证** | [bestpractices.dev](https://bestpractices.dev) |
 
 **已满足条件：**
-- ✅ 公开仓库 + BUSL-1.1 许可证
+- ✅ 公开仓库 + MIT 许可证（alpha 阶段）
 - ✅ 自动化测试套件（987 个测试，CI 强制）
 - ✅ `cargo audit` + `cargo deny check` 供应链安全
 - ✅ 零警告策略（`clippy -D warnings`）
@@ -147,7 +147,7 @@ EchoMind 的隐私和安全声明由公认框架背书。以下认证均为**免
 
 EchoMind 是一款桌面应用，让你用**自己的本地文档**与任何 OpenAI 兼容的大模型对话。你的文件永远不会离开你的设备——解析、分块、向量化、向量存储全部在本地完成。你自带 API Key（**BYOK**），完全掌控成本和数据。
 
-> **核心价值主张：Rust 极速 · 隐私不出域 · 买断制授权**
+> **核心价值主张：Rust 极速 · 隐私不出域 · MIT 开源**
 
 ### 为什么选择 EchoMind？
 
@@ -160,7 +160,7 @@ EchoMind 是一款桌面应用，让你用**自己的本地文档**与任何 Ope
 | **本地向量化（ONNX）** | ✅ | ✅ | ✅ | ❌ |
 | **本地大模型（GGUF）** | ✅ Pro | ❌ | ❌ | ✅ |
 | **数据库加密** | ✅ SQLCipher | ❌ | ❌ | ❌ |
-| **定价模式** | 一次性买断 | 云订阅 | 免费 | 免费 |
+| **定价模式** | MIT（alpha）→ BUSL-1.1 | 云订阅 | 免费 | 免费 |
 | **零服务器成本** | ✅ | ❌ | ❌ | ✅ |
 
 ---
@@ -500,16 +500,24 @@ Pro 许可证通过 Ed25519 签名**离线验证** — 激活无需网络连接�
 
 ## 📄 许可证
 
-**Business Source License 1.1（BUSL-1.1）** — 详见 [LICENSE](LICENSE)。
+**当前（Alpha）：MIT 许可证** — 详见 [LICENSE](LICENSE)。
 
-EchoMind 采用商业源码许可证，允许：
-- ✅ **个人非商业使用** — 学习、个人知识管理、研究
-- ✅ **源码审查** — 隐私优先理念下完全透明可审计
-- ✅ **30 天评估** — 组织可评估兼容性和功能
-- ❌ **未经授权的商业使用** — 需购买 Pro 许可证
-- ❌ **移除或绕过** Ed25519 许可证验证机制
+Alpha 阶段，EchoMind 采用 **MIT 许可证** — 完全开源，任意使用（个人、商业、修改、分发）。所有 Pro 功能免费开放。
 
-**2030 年 1 月 1 日**起，本许可证自动转为 **Apache License 2.0**。
+**未来（稳定后）：Business Source License 1.1（BUSL-1.1）**
+
+软件成熟后：
+- 许可证从 MIT 切换为 BUSL-1.1
+- `ALPHA_ALL_FEATURES_FREE` 设为 `false`
+- 免费/Pro 分层门控重新启用
+- BUSL-1.1 允许：
+  - ✅ **个人非商业使用** — 学习、个人知识管理、研究
+  - ✅ **源码审查** — 隐私优先理念下完全透明可审计
+  - ✅ **30 天评估** — 组织可评估兼容性和功能
+  - ❌ **未经授权的商业使用** — 需购买 Pro 许可证
+- **2030 年 1 月 1 日**起，BUSL-1.1 自动转为 **Apache License 2.0**
+
+> **为什么现在用 MIT？** 软件仍在打磨中，我们希望在稳定前最大化用户采纳和社区反馈。在产品稳定前限制使用会拖慢改进速度。软件成熟后，将切换为 BUSL-1.1 以维持开发。
 
 ---
 
@@ -525,7 +533,7 @@ EchoMind 采用商业源码许可证，允许：
 
 <p align="center">
   <a href="README.md">📖 English</a> ·
-  <a href="LICENSE">BUSL-1.1</a>
+  <a href="LICENSE">MIT</a>
 </p>
 
 <p align="center">

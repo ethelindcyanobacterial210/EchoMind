@@ -21,7 +21,7 @@
   <img src="https://img.shields.io/badge/Rust-1.85%2B-orange?logo=rust" alt="Rust">
   <img src="https://img.shields.io/badge/Tauri-v2-blue?logo=tauri" alt="Tauri v2">
   <img src="https://img.shields.io/badge/Edition-2024-orange" alt="Edition 2024">
-  <img src="https://img.shields.io/badge/License-BUSL--1.1-blue" alt="BUSL 1.1 License">
+  <img src="https://img.shields.io/badge/License-MIT-blue" alt="MIT License">
   <img src="https://img.shields.io/badge/Tests-987%20passed-brightgreen" alt="Tests">
   <img src="https://img.shields.io/badge/Platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey" alt="Cross-platform">
 </p>
@@ -78,7 +78,7 @@ EchoMind's privacy and security claims are backed by recognized frameworks. All 
 | **Verify** | [bestpractices.dev](https://bestpractices.dev) |
 
 **Already satisfied:**
-- ✅ Public repo with BUSL-1.1 license
+- ✅ Public repo with MIT license (alpha phase)
 - ✅ Automated test suite (987 tests, CI-enforced)
 - ✅ `cargo audit` + `cargo deny check` supply chain security
 - ✅ Zero warnings policy (`clippy -D warnings`)
@@ -147,7 +147,7 @@ U.S. National Institute of Standards and Technology privacy risk management fram
 
 EchoMind is a desktop application that lets you **chat with your local documents** using any OpenAI-compatible LLM. Your files never leave your machine — parsing, chunking, embedding, and vector storage all happen locally. You bring your own API key (**BYOK**), so you stay in full control of costs and data.
 
-> **Core value proposition: Rust speed · Privacy by design · One-time license**
+> **Core value proposition: Rust speed · Privacy by design · MIT open source**
 
 ### Why EchoMind?
 
@@ -160,7 +160,7 @@ EchoMind is a desktop application that lets you **chat with your local documents
 | **Local embedding (ONNX)** | ✅ | ✅ | ✅ | ❌ |
 | **Local LLM (GGUF)** | ✅ Pro | ❌ | ❌ | ✅ |
 | **Database encryption** | ✅ SQLCipher | ❌ | ❌ | ❌ |
-| **Pricing model** | One-time license | Cloud subscription | Free | Free |
+| **Pricing model** | MIT (alpha) → BUSL-1.1 | Cloud subscription | Free | Free |
 | **Zero server cost** | ✅ | ❌ | ❌ | ✅ |
 
 ---
@@ -500,16 +500,24 @@ Pro license is verified **offline** via Ed25519 signature — no internet connec
 
 ## 📄 License
 
-**Business Source License 1.1 (BUSL-1.1)** — see [LICENSE](LICENSE).
+**Current (Alpha): MIT License** — see [LICENSE](LICENSE).
 
-EchoMind uses the Business Source License, which allows:
-- ✅ **Personal non-commercial use** — learning, personal knowledge management, research
-- ✅ **Source code review** — full transparency for privacy-conscious users
-- ✅ **30-day evaluation** for organizations
-- ❌ **Commercial use without a license** — requires purchasing a Pro license
-- ❌ **Removing or bypassing** the Ed25519 license verification
+During the alpha phase, EchoMind is licensed under the **MIT License** — fully open source, free for any use (personal, commercial, modification, redistribution). All Pro features are unlocked at no cost.
 
-On **January 1, 2030**, this license automatically converts to **Apache License 2.0**.
+**Future (Post-stabilization): Business Source License 1.1 (BUSL-1.1)**
+
+Once the software matures:
+- License will switch from MIT → BUSL-1.1
+- `ALPHA_ALL_FEATURES_FREE` will be set to `false`
+- Free/Pro tier gating will be re-enabled
+- BUSL-1.1 allows:
+  - ✅ **Personal non-commercial use** — learning, personal knowledge management, research
+  - ✅ **Source code review** — full transparency for privacy-conscious users
+  - ✅ **30-day evaluation** for organizations
+  - ❌ **Commercial use without a license** — requires purchasing a Pro license
+- On **January 1, 2030**, BUSL-1.1 automatically converts to **Apache License 2.0**
+
+> **Why MIT now?** The software is still stabilizing. We want maximum adoption and community feedback during this period. Restricting use before the product is stable would slow down improvement. When the software is solid, we'll switch to BUSL-1.1 to sustain development.
 
 ---
 
@@ -525,7 +533,7 @@ On **January 1, 2030**, this license automatically converts to **Apache License 
 
 <p align="center">
   <a href="README.zh-CN.md">📖 中文文档</a> ·
-  <a href="LICENSE">BUSL-1.1</a>
+  <a href="LICENSE">MIT</a>
 </p>
 
 <p align="center">
