@@ -129,7 +129,11 @@ static HF_REACHABLE: std::sync::LazyLock<bool> = std::sync::LazyLock::new(|| {
         Err(_) => return false,
     };
     let url = "https://huggingface.co/Xenova/all-MiniLM-L6-v2/resolve/main/config.json";
-    client.get(url).send().map(|r| r.status().is_success()).unwrap_or(false)
+    client
+        .get(url)
+        .send()
+        .map(|r| r.status().is_success())
+        .unwrap_or(false)
 });
 
 /// 检测系统是否为中文环境。

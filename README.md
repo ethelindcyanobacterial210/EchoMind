@@ -57,7 +57,7 @@ EchoMind is a desktop application that lets you **chat with your local documents
 ## ✨ Features
 
 ### 📥 Document Intelligence
-- **Multi-format support** — Markdown, text, code files (Rust/TS/Python/Go), PDF (Pro), DOCX, HTML, PPTX, EPUB, XLSX/CSV
+- **Multi-format support** — Markdown, text, code files (Rust/TS/Python/Go), HTML (Free); PDF, DOCX, PPTX, EPUB, XLSX/CSV (Pro)
 - **100% local processing** — parsing, chunking, embedding, and vector storage all on-device
 - **Semantic chunking** — paragraph → sentence → clause recursive splitting with code block preservation
 - **Section-aware splitting** — Markdown heading hierarchy → section-boundary chunks
@@ -136,15 +136,16 @@ EchoMind is a desktop application that lets you **chat with your local documents
 
 ### 💰 Free vs Pro — Feature Comparison
 
-> **One-time payment, no subscription.** Free tier is fully functional for personal knowledge management. Pro unlocks enterprise-grade capabilities.
+> **One-time payment, no subscription.** Free tier covers personal knowledge management (Markdown, text, code, HTML). Pro unlocks professional document formats, local LLM, and enterprise-grade retrieval.
 
 | Feature | 🆓 Free | 🚀 Pro |
 |---|:---:|:---:|
 | **File limit** | 50 files | **Unlimited** |
 | **Markdown & Text** | ✅ | ✅ |
 | **PDF import** | ❌ | ✅ |
-| **DOCX / HTML / PPTX / EPUB** | ✅ | ✅ |
-| **XLSX / CSV** | ✅ | ✅ |
+| **DOCX / PPTX / EPUB** | ❌ | ✅ |
+| **XLSX / CSV** | ❌ | ✅ |
+| **HTML / HTM** | ✅ | ✅ |
 | **Code files** (Rust/TS/Python/Go) | ✅ | ✅ |
 | **Remote LLM (BYOK)** | ✅ | ✅ |
 | **Local ONNX embedding** | ✅ | ✅ |
@@ -338,7 +339,7 @@ Any OpenAI-compatible API endpoint works:
 | **Price** | **$0** | **One-time license** |
 | **Recurring fees** | Never | Never |
 | **File limit** | 50 | Unlimited |
-| **Document formats** | All except PDF | All formats |
+| **Document formats** | md/txt/code/html | All formats |
 | **Local LLM** | ❌ | ✅ |
 | **Advanced retrieval** | ❌ | ✅ |
 | **Multimodal PDF** | ❌ | ✅ |
@@ -347,9 +348,9 @@ Any OpenAI-compatible API endpoint works:
 
 </div>
 
-**Free tier** is not a trial — it's a fully functional personal knowledge base with RAG chat, hybrid retrieval, knowledge graph, agentic reasoning, semantic caching, SQLCipher encryption, PII detection, and audit logging. No time limits, no feature locks on core capabilities.
+**Free tier** is not a trial — it's a fully functional personal knowledge base supporting Markdown, text, code files (Rust/TS/Python/Go), and HTML. Includes RAG chat, hybrid retrieval, knowledge graph, agentic reasoning, semantic caching, SQLCipher encryption, PII detection, and audit logging. No time limits, no feature locks on core capabilities.
 
-**Pro tier** adds: unlimited files, PDF import, local LLM inference (zero cloud), GPU acceleration, advanced retrieval (reranking/HyDE/HNSW/ColBERT), multimodal PDF processing (OCR/VLM), custom ONNX model upload, and developer tools (code symbol search + execution sandbox).
+**Pro tier** adds: unlimited files, professional document formats (PDF/DOCX/PPTX/EPUB/XLSX/CSV), local LLM inference (zero cloud), GPU acceleration, advanced retrieval (reranking/HyDE/HNSW/ColBERT), multimodal PDF processing (OCR/VLM), custom ONNX model upload, and developer tools (code symbol search + execution sandbox).
 
 Pro license is verified **offline** via Ed25519 signature — no internet connection required for activation. No subscription, no recurring fees, no telemetry.
 

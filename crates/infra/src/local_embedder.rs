@@ -178,9 +178,7 @@ fn detect_chinese_locale() -> bool {
 /// - 不可达：用户在中国大陆无 VPN，魔搭优先（境内 CDN 速度 16-38 MB/s）
 ///
 /// 这样即使外国人到中国出差（系统语言为英文），也能自动切换到魔搭源。
-static HF_REACHABLE: std::sync::LazyLock<bool> = std::sync::LazyLock::new(|| {
-    probe_huggingface()
-});
+static HF_REACHABLE: std::sync::LazyLock<bool> = std::sync::LazyLock::new(|| probe_huggingface());
 
 /// 探测 HuggingFace 是否可达（3 秒超时 HEAD 请求）。
 fn probe_huggingface() -> bool {
@@ -194,7 +192,11 @@ fn probe_huggingface() -> bool {
     };
     // 用一个小文件探测，HEAD 请求可能被 CDN 拒绝，改用 GET + 立即丢弃
     let url = "https://huggingface.co/Xenova/all-MiniLM-L6-v2/resolve/main/config.json";
-    client.get(url).send().map(|r| r.status().is_success()).unwrap_or(false)
+    client
+        .get(url)
+        .send()
+        .map(|r| r.status().is_success())
+        .unwrap_or(false)
 }
 
 /// 根据系统语言和网络探测返回下载源优先级顺序。

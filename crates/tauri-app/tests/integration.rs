@@ -366,26 +366,30 @@ async fn tc_lic_003_free_tier_quota_blocked() {
     );
 }
 
-/// TC-LIC-004 免费版 PDF 付费门：is_pro=false 时导入 PDF 返回 PRO_REQUIRED（REQ-LIC-002-AC-2）。
+/// TC-LIC-004 免费版 Pro 门控格式付费门：is_pro=false 时导入 Pro 门控格式返回 PRO_REQUIRED（REQ-LIC-002-AC-2）。
+///
+/// Pro 门控格式：pdf / docx / pptx / epub / xlsx / csv。
 #[tokio::test]
-async fn tc_lic_004_free_tier_pdf_blocked() {
+async fn tc_lic_004_free_tier_pro_gated_blocked() {
     let dir = TempDir::new().unwrap();
     let state = AppState::new(dir.path().to_path_buf()).await.unwrap();
-
-    // 创建伪造 PDF 文件
-    let pdf = dir.path().join("paper.pdf");
-    std::fs::write(&pdf, b"%PDF-1.7 fake-bytes").unwrap();
-
     let app = tauri::test::mock_app();
     let handle = app.handle().clone();
 
-    let result = import_files_inner(&handle, &[pdf.to_string_lossy().into_owned()], &state).await;
+    for ext in ["pdf", "docx", "pptx", "epub", "xlsx", "csv"] {
+        let fname = format!("test.{ext}");
+        let file = dir.path().join(&fname);
+        std::fs::write(&file, b"fake-content").unwrap();
 
-    let err = result.err().unwrap_or_default();
-    assert!(
-        err.contains("PRO_REQUIRED"),
-        "免费版 PDF 导入应返回 PRO_REQUIRED 错误，实际: {err}"
-    );
+        let result =
+            import_files_inner(&handle, &[file.to_string_lossy().into_owned()], &state).await;
+
+        let err = result.err().unwrap_or_default();
+        assert!(
+            err.contains("PRO_REQUIRED"),
+            "免费版 .{ext} 导入应返回 PRO_REQUIRED 错误，实际: {err}"
+        );
+    }
 }
 
 /// TC-LIC-005 激活 Pro 并跨重启持久化（REQ-LIC-001-AC-3）。

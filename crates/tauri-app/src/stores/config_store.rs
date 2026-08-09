@@ -65,6 +65,7 @@ impl ConfigStore {
     ///
     /// 开发模式优化：debug 构建 + pro feature 编译时，自动激活 Pro，
     /// 免去开发时手动激活 license 的步骤。release 构建仍需 license key。
+    #[allow(unreachable_code)] // debug+pro 时 cfg 块总 return true，false 不可达
     async fn load_is_pro(storage: &SqliteStorage) -> bool {
         // 先检查 settings 表中是否已激活
         let stored = storage
